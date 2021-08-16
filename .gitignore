@@ -1,2 +1,7 @@
-tramp
+
 *10_sql.el
+
+elpa/
+eln-cache/
+eshell/history
+eshell/lastdir
