@@ -1,2 +1,9 @@
 tramp
 *10_sql.el
+/elpa/
+/auto-save-list/
+/quelpa/
+/transient/
+/.lsp-session-v1
+/projectile-bookmarks.eld
+/.last-package-update-day
