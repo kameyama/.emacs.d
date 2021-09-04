@@ -5,3 +5,6 @@ elpa/
 eln-cache/
 eshell/history
 eshell/lastdir
+/auto-save-list/
+/quelpa/
+/.lsp-session-v1

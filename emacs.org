@@ -1,4 +1,3 @@
-
 #+title Emacs Configration
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 
@@ -7,13 +6,12 @@
 
 
 
-
   #+begin_src emacs-lisp
 
 
     ;; init.el is created from emacs.org
     ;; Emacs settings are maneged by emacs.org
-    ;; Do not modify this file.
+    ;; Do NOT modify this file.
 
     ;; Initialize package sources
     (require 'package)
@@ -37,6 +35,9 @@
     (setq use-package-always-ensure t)
    #+end_src
 
+
+
+   
 ** Auto Package Updates
 
    #+begin_src emacs-lisp
@@ -52,12 +53,19 @@
 
 
    
+** Shell Path
+
+   #+begin_src emacs-lisp
+     (use-package exec-path-from-shell
+       :config
+       (exec-path-from-shell-initialize))
+   #+end_src
+   
 * Emacs General Settings
 
   #+begin_src emacs-lisp
     ;; Thanks, but no thanks
     (setq inhibit-startup-message t)
-
 
     ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
     (tool-bar-mode -1)          ; Disable the toolbar
@@ -170,10 +178,6 @@
        (ivy-rich-mode 1))
 
 
-
-
-
-
      (use-package counsel
        :bind (("M-x" . counsel-M-x)
 	      ("C-x b" . counsel-ibuffer)
@@ -237,13 +241,15 @@
       (setq evil-want-keybinding nil)
       (setq evil-want-C-u-scroll t)
       (setq evil-want-C-i-jump nil)
+      (setq evil-normal-state-cursor '("cyan" box)) 
+      (setq evil-emacs-state-cursor '("orange" box))
 
       :config
       (evil-mode 1)
       (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
       (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
       (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
-  
+
       ;; Use visual line motions even outside of visual-line-mode buffers
       (evil-global-set-key 'motion "j" 'evil-next-visual-line)
       (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
@@ -260,6 +266,12 @@
       :config
       (evil-collection-init))
   #+end_src
+
+
+
+
+
+
 
 
 
@@ -355,28 +367,119 @@
     (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
  #+end_src
-* Application
+
   
-** Congig Other App
+* Develepment
+
+** General
+
+*** Language Server Protcol
 
    #+begin_src emacs-lisp
-
-     (push '("conf-unix" . conf-unix) org-src-lang-modes)
-
+     (use-package lsp-mode
+       :commands (lsp lsp-deferred)
+       :init
+       (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+       :config
+       (lsp-enable-which-key-integration t))
    #+end_src
 
+*** Header Breadcrumb
+   #+begin_src emacs-lisp
+     (defun lsp-mode-setup ()
+       (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+       (lsp-headerline-breadcrumb-mode)
 
-
-
-
-
-** some app
-   #+begin_src conf-unix :tangle ./config
-	val=33
+     :hook (lsp-mode . lsp-mode-setup)
+     )
    #+end_src
 
+*** Better Completions with company-mode
+    #+begin_src emacs-lisp
+      (use-package company
+	:after lsp-mode
+	:hook (prog-mode . company-mode)
+	:bind (:map company-active-map
+	       ("C-f" . company-complete-selection))
+	      (:map lsp-mode-map
+	       ("<tab>" . company-indent-or-complete-common))
+	:custom
+	(company-minimum-prefix-length 1)
+	(company-idle-delay 0.0))
 
-* Develepment
+      (use-package company-box
+	:hook (company-mode . company-box-mode))
+
+    #+end_src
+
+
+
+*** More UI Enhancements lsp-ui-mode
+
+    #+begin_src emacs-lisp
+      (use-package lsp-ui
+	:hook (lsp-mode . lsp-ui-mode))
+    #+end_src
+
+*** Sideline
+    #+begin_src emacs-lisp
+      (setq lsp-ui-sideline-enable nil)
+      (setq lsp-ui-sideline-show-hover nil)
+    #+end_src
+
+    
+*** lsp-treemacs
+    #+begin_src emacs-lisp
+      (use-package lsp-treemacs
+	:after lsp)
+    #+end_src
+
+    
+*** Quicker symbol searching with lsp-ivy
+    #+begin_src emacs-lisp
+      (use-package lsp-ivy)
+    #+end_src
+
+*** Commenting lines
+    #+begin_src emacs-lisp
+      (use-package evil-nerd-commenter
+	:bind ("M-/" . evilnc-comment-or-uncomment-lines))
+    #+end_src
+    
+** Languages
+   
+*** Python
+
+    #+begin_src emacs-lisp
+      (use-package python-mode
+		  :ensure t
+		  :hook (python-mode . lsp-deferred)
+		  :custom
+		  (python-shell-interpreter "python3"))
+    #+end_src
+
+
+
+
+   
+*** Julia
+
+    #+begin_src emacs-lisp
+      (quelpa '(lsp-julia :fetcher github
+			  :repo "non-Jedi/lsp-julia"
+			  :files (:defaults "languageserver")))
+
+      (use-package lsp-julia
+	:config
+	(setq lsp-julia-default-environment "~/.julia/environments/v1.6"))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (add-hook 'ess-julia-mode-hook #'lsp-mode)
+    #+end_src
+
+  
+
 
 ** Projectile
 

@@ -1,6 +1,6 @@
 ;; init.el is created from emacs.org
 ;; Emacs settings are maneged by emacs.org
-;; Do not modify this file.
+;; Do NOT modify this file.
 
 ;; Initialize package sources
 (require 'package)
@@ -32,9 +32,12 @@
   (auto-package-update-maybe)
   (auto-package-update-at-time "09:00"))
 
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
+
 ;; Thanks, but no thanks
 (setq inhibit-startup-message t)
-
 
 ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
 (tool-bar-mode -1)          ; Disable the toolbar
@@ -121,10 +124,6 @@
   (ivy-rich-mode 1))
 
 
-
-
-
-
 (use-package counsel
   :bind (("M-x" . counsel-M-x)
 	 ("C-x b" . counsel-ibuffer)
@@ -167,6 +166,8 @@
   (setq evil-want-keybinding nil)
   (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil)
+  (setq evil-normal-state-cursor '("cyan" box)) 
+  (setq evil-emacs-state-cursor '("orange" box))
 
   :config
   (evil-mode 1)
@@ -256,7 +257,63 @@
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
-(push '("conf-unix" . conf-unix) org-src-lang-modes)
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(defun lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode)
+
+:hook (lsp-mode . lsp-mode-setup)
+)
+
+(use-package company
+  :after lsp-mode
+  :hook (prog-mode . company-mode)
+  :bind (:map company-active-map
+	 ("C-f" . company-complete-selection))
+	(:map lsp-mode-map
+	 ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
+
+(setq lsp-ui-sideline-enable nil)
+(setq lsp-ui-sideline-show-hover nil)
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy)
+
+(use-package evil-nerd-commenter
+  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+
+(use-package python-mode
+	    :ensure t
+	    :hook (python-mode . lsp-deferred)
+	    :custom
+	    (python-shell-interpreter "python3"))
+
+(quelpa '(lsp-julia :fetcher github
+		    :repo "non-Jedi/lsp-julia"
+		    :files (:defaults "languageserver")))
+
+(use-package lsp-julia
+  :config
+  (setq lsp-julia-default-environment "~/.julia/environments/v1.6"))
+
+(add-hook 'ess-julia-mode-hook #'lsp-mode)
 
 (use-package projectile
   :diminish projectile-mode
@@ -276,16 +333,3 @@
   :commands (magit-status magit-get-current-branch)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(package-selected-packages
-;;    '(magit counsel-projectile projectile org-bullets evil-collection evil hydra helpful counsel ivy-rich ivy which-key doom-modeline all-the-icons rainbow-delimiters doom-themes general auto-package-update use-package)))
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  )
