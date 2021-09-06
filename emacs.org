@@ -4,7 +4,7 @@
 
 * Packege System
 
-
+  
 
   #+begin_src emacs-lisp
 
@@ -54,7 +54,7 @@
 
    
 ** Shell Path
-
+   emacsはshellに設定されているpathをデフォルトでは読み込んでくれないのでその設定.
    #+begin_src emacs-lisp
      (use-package exec-path-from-shell
        :config
@@ -62,7 +62,7 @@
    #+end_src
    
 * Emacs General Settings
-
+** UI
   #+begin_src emacs-lisp
     ;; Thanks, but no thanks
     (setq inhibit-startup-message t)
@@ -88,15 +88,12 @@
 
   #+end_src
 
-
 ** Keybinding
 
    #+begin_src emacs-lisp
 
      ;;ESC Cancels All
      (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-
 
      (use-package general
        :config
@@ -138,7 +135,6 @@
 
   #+end_src
 
-  
 ** Which Kye
    #+begin_src emacs-lisp
      (use-package which-key
@@ -235,47 +231,47 @@
 
   #+begin_src emacs-lisp
 
-    (use-package evil
-      :init
-      (setq evil-want-integration t)
-      (setq evil-want-keybinding nil)
-      (setq evil-want-C-u-scroll t)
-      (setq evil-want-C-i-jump nil)
-      (setq evil-normal-state-cursor '("cyan" box)) 
-      (setq evil-emacs-state-cursor '("orange" box))
+	(use-package evil
+	  :init
+	  (setq evil-want-integration t)
+	  (setq evil-want-keybinding nil)
+    ;      (setq evil-want-C-u-scroll t)
+	  (setq evil-want-C-i-jump nil)
+	  ;; cursor colors
+	  (setq evil-normal-state-cursor '("cyan" box)) 
+	  (setq evil-emacs-state-cursor '("orange" box))
 
-      :config
-      (evil-mode 1)
-      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-      (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-      (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
+	  :config
+	  (evil-mode 1)
+	  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+	  (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+	  (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
+	  ;; C-f, C-b, C-n,C-p bindings in normal state
+	  (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
+	  (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
+	  (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
+	  (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
+	  (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
 
-      ;; Use visual line motions even outside of visual-line-mode buffers
-      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-      (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+	  ;; Use visual line motions even outside of visual-line-mode buffers
+     ;     (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+     ;     (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-      (evil-set-initial-state 'messages-buffer-mode 'normal)
-      (evil-set-initial-state 'dashboard-mode 'normal))
-
-
-    (defalias 'evil-insert-state 'evil-emacs-state)
+	  (evil-set-initial-state 'messages-buffer-mode 'normal)
+	  (evil-set-initial-state 'dashboard-mode 'normal))
 
 
-    (use-package evil-collection
-      :after evil
-      :config
-      (evil-collection-init))
+	(defalias 'evil-insert-state 'evil-emacs-state)
+
+
+	(use-package evil-collection
+	  :after evil
+	  :config
+	  (evil-collection-init))
   #+end_src
 
 
-
-
-
-
-
-
-
-
+  
 * Org
 
 ** Visual Settings
@@ -368,7 +364,6 @@
 
  #+end_src
 
-  
 * Develepment
 
 ** General
@@ -504,8 +499,8 @@
 
    
 
-** Magit
-
+** [[https://github.com/magit/magit][Magit]]
+   git interface.
    #+begin_src emacs-lisp
 
      (use-package magit
