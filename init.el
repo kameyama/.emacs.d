@@ -22,6 +22,7 @@
 
 ;; On non-Guix systems, "ensure" packages by default
 (setq use-package-always-ensure t)
+(use-package quelpa)
 
 (use-package auto-package-update
   :custom
