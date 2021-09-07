@@ -3,7 +3,6 @@
 
 
 * Packege System
-
   
 
   #+begin_src emacs-lisp
@@ -33,7 +32,10 @@
 
     ;; On non-Guix systems, "ensure" packages by default
     (setq use-package-always-ensure t)
+    (use-package quelpa)
    #+end_src
+
+
 
 
 
@@ -456,7 +458,6 @@
 
 
 
-   
 *** Julia
 
     #+begin_src emacs-lisp
@@ -474,7 +475,7 @@
     #+end_src
 
   
-
+ 
 
 ** Projectile
 
