@@ -157,6 +157,7 @@
 ;; font setting
 ;;(set-face-attribute 'default nil :font "Fira Mono" :height 280)
 ;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :wigth 'regular)
+(set-face-attribute 'default nil :height 150)
 
 (use-package evil
       :init
