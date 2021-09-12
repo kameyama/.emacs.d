@@ -479,6 +479,7 @@
 
 
     
+
 *** Go
     #+begin_src emacs-lisp
       (use-package go-mode)
@@ -486,7 +487,8 @@
 
 
 
-*** Scalai
+*** Scala
+
     #+begin_src emacs-lisp
       (use-package lsp-metals
 	:ensure t
@@ -498,6 +500,7 @@
 	:hook (scala-mode . lsp))
     #+end_src
 
+
 *** Docker
 
     #+begin_src emacs-lisp
@@ -508,6 +511,8 @@
     #+begin_src emacs-lisp
       (use-package yaml-mode)
     #+end_src
+
+
 
 
 
