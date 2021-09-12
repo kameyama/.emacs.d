@@ -322,6 +322,8 @@
 
 (add-hook 'ess-julia-mode-hook #'lsp-mode)
 
+(use-package go-mode)
+
 (use-package lsp-metals
   :ensure t
   :custom
@@ -330,6 +332,10 @@
   ;; emacs can use indentation provided by scala-mode.
   (lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
   :hook (scala-mode . lsp))
+
+(use-package dockerfile-mode)
+
+(use-package yaml-mode)
 
 (use-package projectile
   :diminish projectile-mode

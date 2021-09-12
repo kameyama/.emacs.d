@@ -461,6 +461,7 @@
 
 
 *** Julia
+    
 
     #+begin_src emacs-lisp
       (quelpa '(lsp-julia :fetcher github
@@ -478,7 +479,14 @@
 
 
     
-*** Scala
+*** Go
+    #+begin_src emacs-lisp
+      (use-package go-mode)
+    #+end_src
+
+
+
+*** Scalai
     #+begin_src emacs-lisp
       (use-package lsp-metals
 	:ensure t
@@ -488,6 +496,17 @@
 	;; emacs can use indentation provided by scala-mode.
 	(lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
 	:hook (scala-mode . lsp))
+    #+end_src
+
+*** Docker
+
+    #+begin_src emacs-lisp
+    (use-package dockerfile-mode)
+    #+end_src
+
+*** yaml
+    #+begin_src emacs-lisp
+      (use-package yaml-mode)
     #+end_src
 
 
