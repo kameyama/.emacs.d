@@ -8,8 +8,7 @@
   #+begin_src emacs-lisp
 
 
-    ;; init.el is created from emacs.org
-    ;; Emacs settings are maneged by emacs.org
+    ;; init.el is created from emacs.org which emacs settings.
     ;; Do NOT modify this file.
 
     ;; Initialize package sources
@@ -56,7 +55,7 @@
 
    
 ** Shell Path
-   emacsはshellに設定されているpathをデフォルトでは読み込んでくれないのでその設定.
+   emacs does not load shell path by default.
    #+begin_src emacs-lisp
      (use-package exec-path-from-shell
        :config
@@ -517,6 +516,12 @@
 
   
 *** SQL
+    require pgformatter. To install it, run next.
+    #+begin_src shell
+      brew install pgformatter
+    #+end_src
+
+    
     #+begin_src emacs-lisp
       (use-package sqlformat)
       (setq sqlformat-command 'pgformatter)

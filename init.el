@@ -1,5 +1,4 @@
-;; init.el is created from emacs.org
-;; Emacs settings are maneged by emacs.org
+;; init.el is created from emacs.org which emacs settings.
 ;; Do NOT modify this file.
 
 ;; Initialize package sources
