@@ -515,7 +515,16 @@
 
 
 
+  
+*** SQL
+    #+begin_src emacs-lisp
+      (use-package sqlformat)
+      (setq sqlformat-command 'pgformatter)
+      (setq sqlformat-args '("-s2" "-g"))
+    #+end_src
 
+
+    
 ** Projectile
 
    #+begin_src emacs-lisp
@@ -538,6 +547,25 @@
   
 
    
+** Terminals
+
+*** term-mode
+    #+begin_src emacs-lisp
+      (use-package term
+	:config
+	(setq explicit-shell-file-name "zsh")
+	;;(setq explicit-zsh-args '())
+	(setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
+    #+end_src
+
+*** For batter color support
+    #+begin_src emacs-lisp
+      (use-package eterm-256color
+	:hook (term-mode . eterm-256color-mode))
+    #+end_src
+
+    
+    
 ** [[https://github.com/magit/magit][Magit]]
    git interface.
    #+begin_src emacs-lisp

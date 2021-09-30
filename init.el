@@ -337,6 +337,10 @@
 
 (use-package yaml-mode)
 
+(use-package sqlformat)
+(setq sqlformat-command 'pgformatter)
+(setq sqlformat-args '("-s2" "-g"))
+
 (use-package projectile
   :diminish projectile-mode
   :config (projectile-mode)
@@ -350,6 +354,15 @@
 
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
+
+(use-package term
+  :config
+  (setq explicit-shell-file-name "zsh")
+  ;;(setq explicit-zsh-args '())
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
+
+(use-package eterm-256color
+  :hook (term-mode . eterm-256color-mode))
 
 (use-package magit
   :commands (magit-status magit-get-current-branch)
