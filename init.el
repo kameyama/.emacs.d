@@ -79,7 +79,6 @@
   :config
   (load-theme 'doom-dracula t))
 
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
@@ -172,6 +171,14 @@
   :config
   (evil-mode 1)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; global  
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+
+  ;; emacs state
   (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
 
@@ -184,9 +191,6 @@
   (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
 
   ;; visual state
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (define-key evil-visual-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
   (define-key evil-visual-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
   (define-key evil-visual-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
