@@ -160,42 +160,49 @@
 (set-face-attribute 'default nil :height 150)
 
 (use-package evil
-      :init
-      (setq evil-want-integration t)
-      (setq evil-want-keybinding nil)
-;      (setq evil-want-C-u-scroll t)
-      (setq evil-want-C-i-jump nil)
-      ;; cursor colors
-      (setq evil-normal-state-cursor '("cyan" box)) 
-      (setq evil-emacs-state-cursor '("orange" box))
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  ;; (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-i-jump nil)
+  ;; cursor colors
+  (setq evil-normal-state-cursor '("cyan" box)) 
+  (setq evil-emacs-state-cursor '("orange" box))
 
-      :config
-      (evil-mode 1)
-      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-      (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-      (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
-      ;; C-f, C-b, C-n,C-p bindings in normal state
-      (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
-      (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
-      (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
-      (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-      (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
+  :config
+  (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+  (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
 
-      ;; Use visual line motions even outside of visual-line-mode buffers
- ;     (evil-global-set-key 'motion "j" 'evil-next-visual-line)
- ;     (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  ;; normal state
+  ;; C-f, C-b, C-n,C-p bindings in normal state
+  (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
+  (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
+  (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
+  (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
+  (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
 
-      (evil-set-initial-state 'messages-buffer-mode 'normal)
-      (evil-set-initial-state 'dashboard-mode 'normal))
+  ;; visual state
+  ;; Use visual line motions even outside of visual-line-mode buffers
+  ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (define-key evil-visual-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
+  (define-key evil-visual-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
+  (define-key evil-visual-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
+  (define-key evil-visual-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
+
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
 
 
-    (defalias 'evil-insert-state 'evil-emacs-state)
+(defalias 'evil-insert-state 'evil-emacs-state)
 
 
-    (use-package evil-collection
-      :after evil
-      :config
-      (evil-collection-init))
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package org
 ;;  :hook (org-mode . dw/org-mode-setup)
