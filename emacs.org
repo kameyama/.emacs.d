@@ -1,10 +1,12 @@
 #+title Emacs Configration
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
+#+STARTUP: fold
+
 
 
 * Packege System
-  
 
+** General 
   #+begin_src emacs-lisp
 
 
@@ -35,11 +37,9 @@
    #+end_src
 
 
+ 
 
-
-
-   
-** Auto Package Updates
+** Package Updates
 
    #+begin_src emacs-lisp
      (use-package auto-package-update
@@ -62,6 +62,7 @@
        (exec-path-from-shell-initialize))
    #+end_src
    
+
 * Emacs General Settings
 ** UI
   #+begin_src emacs-lisp
@@ -285,7 +286,13 @@
     (use-package org
     ;;  :hook (org-mode . dw/org-mode-setup)
       :config
-      (setq org-ellipsis " ▾"
+    (org-indent-mode)
+    (variable-pitch-mode 1)
+    (auto-fill-mode 0)
+    (visual-line-mode 1)
+
+    (setq evil-auto-indent nil)
+    (setq org-ellipsis " ▾"
 	    org-hide-emphasis-markers t)
       )
 
@@ -367,6 +374,7 @@
 
  #+end_src
 
+
 * Develepment
 
 ** General
@@ -444,6 +452,7 @@
 	:bind ("M-/" . evilnc-comment-or-uncomment-lines))
     #+end_src
     
+
 ** Languages
    
 *** Python
@@ -580,4 +589,5 @@
        :custom
        (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
    #+end_src
+   
    
