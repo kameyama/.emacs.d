@@ -5,13 +5,13 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("melpa-stable" . "https://stable.melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
+			     ("melpa-stable" . "https://stable.melpa.org/packages/")
+			     ("org" . "https://orgmode.org/elpa/")
+			     ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
 (unless package-archive-contents
-  (package-refresh-contents))
+      (package-refresh-contents))
 
 ;; Initialize use-package on non-Linux platforms
 (unless  (package-installed-p 'use-package)
@@ -22,6 +22,13 @@
 ;; On non-Guix systems, "ensure" packages by default
 (setq use-package-always-ensure t)
 (use-package quelpa)
+
+(use-package no-littering)
+
+;; no-littering doesn't set this by default so we must place
+;; auto save files in the same path as it uses for sessions
+(setq auto-save-file-name-transforms
+      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
 (use-package auto-package-update
   :custom
@@ -209,15 +216,15 @@
   (evil-collection-init))
 
 (use-package org
-;;  :hook (org-mode . dw/org-mode-setup)
+  ;;  hook (org-mode . dw/org-mode-setup)
   :config
-(org-indent-mode)
-(variable-pitch-mode 1)
-(auto-fill-mode 0)
-(visual-line-mode 1)
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
 
-(setq evil-auto-indent nil)
-(setq org-ellipsis " ▾"
+  (setq evil-auto-indent nil)
+  (setq org-ellipsis " ▾"
 	org-hide-emphasis-markers t)
   )
 
@@ -255,12 +262,17 @@
 (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
-    '((emacs-lisp . t)
-      (python . t)))
+(with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (shell . t)
+       )
+     )
+    )
 
-  (setq org-confirm-babel-evaluate nil)
+(setq org-confirm-babel-evaluate nil)
 
 ;; This is needed as of Org 9.2
 (require 'org-tempo)

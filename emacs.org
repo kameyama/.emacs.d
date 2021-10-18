@@ -6,8 +6,6 @@
 
 ** General 
   #+begin_src emacs-lisp
-
-
     ;; init.el is created from emacs.org which emacs settings.
     ;; Do NOT modify this file.
 
@@ -15,13 +13,13 @@
     (require 'package)
 
     (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			     ("melpa-stable" . "https://stable.melpa.org/packages/")
-			     ("org" . "https://orgmode.org/elpa/")
-			     ("elpa" . "https://elpa.gnu.org/packages/")))
+				 ("melpa-stable" . "https://stable.melpa.org/packages/")
+				 ("org" . "https://orgmode.org/elpa/")
+				 ("elpa" . "https://elpa.gnu.org/packages/")))
 
     (package-initialize)
     (unless package-archive-contents
-      (package-refresh-contents))
+	  (package-refresh-contents))
 
     ;; Initialize use-package on non-Linux platforms
     (unless  (package-installed-p 'use-package)
@@ -32,10 +30,15 @@
     ;; On non-Guix systems, "ensure" packages by default
     (setq use-package-always-ensure t)
     (use-package quelpa)
+
+    (use-package no-littering)
+
+    ;; no-littering doesn't set this by default so we must place
+    ;; auto save files in the same path as it uses for sessions
+    (setq auto-save-file-name-transforms
+	  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
    #+end_src
 
-
- 
 
 ** Package Updates
 
@@ -50,8 +53,6 @@
        (auto-package-update-at-time "09:00"))
    #+end_src
 
-
-   
 ** Shell Path
    emacs does not load shell path by default.
    #+begin_src emacs-lisp
@@ -62,7 +63,9 @@
    
 
 * Emacs General Settings
+  
 ** UI
+   
   #+begin_src emacs-lisp
     ;; Thanks, but no thanks
     (setq inhibit-startup-message t)
@@ -112,6 +115,7 @@
    #+end_src
   
 ** Theme
+   
   #+begin_src emacs-lisp
 
     (use-package doom-themes
@@ -123,6 +127,7 @@
   #+end_src
 
 ** Modeline
+   
   #+begin_src emacs-lisp
      (use-package all-the-icons)
 
@@ -135,6 +140,7 @@
   #+end_src
 
 ** Which Kye
+   
    #+begin_src emacs-lisp
      (use-package which-key
        :init (which-key-mode)
@@ -219,6 +225,7 @@
    #+end_src
  
 ** Font
+   
   #+begin_src emacs-lisp
 
     ;; font setting
@@ -226,9 +233,6 @@
     ;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :wigth 'regular)
     (set-face-attribute 'default nil :height 150)
    #+end_src
-
-   #+RESULTS:
-
 
 ** Evil
 
@@ -293,15 +297,15 @@
   #+begin_src emacs-lisp
 
     (use-package org
-    ;;  :hook (org-mode . dw/org-mode-setup)
+      ;;  hook (org-mode . dw/org-mode-setup)
       :config
-    (org-indent-mode)
-    (variable-pitch-mode 1)
-    (auto-fill-mode 0)
-    (visual-line-mode 1)
+      (org-indent-mode)
+      (variable-pitch-mode 1)
+      (auto-fill-mode 0)
+      (visual-line-mode 1)
 
-    (setq evil-auto-indent nil)
-    (setq org-ellipsis " ▾"
+      (setq evil-auto-indent nil)
+      (setq org-ellipsis " ▾"
 	    org-hide-emphasis-markers t)
       )
 
@@ -341,23 +345,26 @@
 
   #+end_src
 
-  
 ** Org Babel
-
+   
 *** Babel Languages
    
-  #+begin_src emacs-lisp 
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-	'((emacs-lisp . t)
-	  (python . t)))
+  #+begin_src emacs-lisp
+    (with-eval-after-load 'org
+	(org-babel-do-load-languages
+	 'org-babel-load-languages
+	 '((emacs-lisp . t)
+	   (python . t)
+	   (shell . t)
+	   )
+	 )
+	)
 
-      (setq org-confirm-babel-evaluate nil)
+    (setq org-confirm-babel-evaluate nil)
   #+end_src
 
-
 *** Structure Templates
-
+    
   #+begin_src emacs-lisp
     ;; This is needed as of Org 9.2
     (require 'org-tempo)
@@ -368,9 +375,8 @@
     (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
   #+end_src
 
-
-  
 ** Auto tangle
+   
   #+begin_src emacs-lisp
     ;; Automatically tangle our Emacs.org config file when we save it
     (defun efs/org-babel-tangle-config ()
@@ -429,7 +435,6 @@
     #+end_src
 
 
-
 *** More UI Enhancements lsp-ui-mode
 
     #+begin_src emacs-lisp
@@ -443,26 +448,24 @@
       (setq lsp-ui-sideline-show-hover nil)
     #+end_src
 
-    
 *** lsp-treemacs
     #+begin_src emacs-lisp
       (use-package lsp-treemacs
 	:after lsp)
     #+end_src
 
-    
 *** Quicker symbol searching with lsp-ivy
     #+begin_src emacs-lisp
       (use-package lsp-ivy)
     #+end_src
 
 *** Commenting lines
+
     #+begin_src emacs-lisp
       (use-package evil-nerd-commenter
 	:bind ("M-/" . evilnc-comment-or-uncomment-lines))
     #+end_src
     
-
 ** Languages
    
 *** Python
@@ -474,7 +477,6 @@
 		  :custom
 		  (python-shell-interpreter "python3"))
     #+end_src
-
 
 
 
@@ -497,12 +499,10 @@
 
 
     
-
 *** Go
     #+begin_src emacs-lisp
       (use-package go-mode)
     #+end_src
-
 
 
 *** Scala
@@ -518,7 +518,6 @@
 	:hook (scala-mode . lsp))
     #+end_src
 
-
 *** Docker
 
     #+begin_src emacs-lisp
@@ -533,9 +532,9 @@
 
 
 
-  
 *** SQL
     require pgformatter. To install it, run next.
+    
     #+begin_src shell
       brew install pgformatter
     #+end_src
@@ -547,8 +546,6 @@
       (setq sqlformat-args '("-s2" "-g"))
     #+end_src
 
-
-    
 ** Projectile
 
    #+begin_src emacs-lisp
@@ -567,13 +564,11 @@
 	  (use-package counsel-projectile
 	    :config (counsel-projectile-mode))
    #+end_src   
-
   
-
-   
 ** Terminals
 
 *** term-mode
+    
     #+begin_src emacs-lisp
       (use-package term
 	:config
@@ -583,17 +578,15 @@
     #+end_src
 
 *** For batter color support
+    
     #+begin_src emacs-lisp
       (use-package eterm-256color
 	:hook (term-mode . eterm-256color-mode))
     #+end_src
 
-    
-    
 ** [[https://github.com/magit/magit][Magit]]
    git interface.
    #+begin_src emacs-lisp
-
      (use-package magit
        :commands (magit-status magit-get-current-branch)
        :custom
@@ -602,3 +595,4 @@
    
    
    
+ 

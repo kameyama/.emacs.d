@@ -1,19 +1,24 @@
+/auto-save-list/*
+/data/*
+/elpa/*
+/quelpa/*
+/etc/*
+/transient/*
+/var/*
+
+/.last-package-update-day
+/.lsp-session-v1
+/.org-id-locations
 
 
-*10_sql.el
-
-elpa/
 eln-cache/
 eshell/history
 eshell/lastdir
-/auto-save-list/
-/quelpa/
-/.lsp-session-v1
-/projectile-bookmarks.eld
-/.last-package-update-day
-/transient/
-/.org-id-locations
 
-/.cache/lsp/metals/coursier
-/.cache/
+
+/projectile-bookmarks.eld
+
+
+
+/.cache/*
 /#emacs.org#
