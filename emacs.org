@@ -498,7 +498,11 @@
 
 
 *** More UI Enhancements lsp-ui-mode
-
+   Enable nice rendering of documentation on hover
+   Warning: on some systems this package can reduce your emacs responsiveness significally.
+   (See: https://emacs-lsp.github.io/lsp-mode/page/performance/)
+   In that case you have to not only disable this but also remove from the packages since
+   lsp-mode can activate it automatically.
     #+begin_src emacs-lisp
       (use-package lsp-ui
 	:hook (lsp-mode . lsp-ui-mode))
@@ -540,26 +544,55 @@
 		  (python-shell-interpreter "python3"))
     #+end_src
 
+*** Python-docker
+    #+begin_src emacs-lisp
+      (use-package lsp-docker
+	:custom
+	(defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
+
+	(setq lsp-docker-client-configs
+	      '((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
+		(:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
+		(:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
+		))
+
+	(lsp-docker-init-clients
+	 :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
+	 :client-packages lsp-docker-client-packages
+	 :client-configs lsp-docker-client-configs)
+	)
+
+    #+end_src
+
+
 
 
 *** Julia
+
+    #+begin_src emacs-lisp
+(set-language-environment "UTF-8")
+
+(require 'eglot)
+(add-hook 'julia-mode-hook 'eglot-ensure)
+
+(require 'julia-mode)
+(require 'julia-repl)
+(add-hook 'julia-mode-hook 'julia-repl-mode)
+(add-to-list 'eglot-server-programs
+             '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+    #+end_src
+
     
+    # #+begin_src emacs-lisp
 
-    #+begin_src emacs-lisp
-      (quelpa '(lsp-julia :fetcher github
-			  :repo "non-Jedi/lsp-julia"
-			  :files (:defaults "languageserver")))
+    #   (use-package lsp-julia
+    # 	:config
+    # 	(setq lsp-julia-default-environment "~/.julia/environments/v1.6"))
+    # #+end_src
 
-      (use-package lsp-julia
-	:config
-	(setq lsp-julia-default-environment "~/.julia/environments/v1.6"))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (add-hook 'ess-julia-mode-hook #'lsp-mode)
-    #+end_src
-
-
+    # #+begin_src emacs-lisp
+    #   (add-hook 'julia-mode-hook #'lsp-mode)
+    # #+end_src
     
 *** Go
     #+begin_src emacs-lisp
@@ -579,24 +612,51 @@
 
 
 *** Scala
-
+**** scala-mode for highlighting, indentation and motion commands    
     #+begin_src emacs-lisp
-      (use-package lsp-metals
-	:ensure t
-	:custom
-	;; Metals claims to support range formatting by default but it supports range
-	;; formatting of multiline strings only. You might want to disable it so that
-	;; emacs can use indentation provided by scala-mode.
-	(lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
-	:hook (scala-mode . lsp))
+      
+      (use-package scala-mode
+	:interpreter
+	  ("scala" . scala-mode))
     #+end_src
 
-*** Docker
+**** Enable sbt mode for executing sbt commands
+   #+begin_src emacs-lisp
+     (use-package sbt-mode
+       :commands sbt-start sbt-command
+       :config
+       ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+       ;; allows using SPACE when in the minibuffer
+       (substitute-key-definition
+	'minibuffer-complete-word
+	'self-insert-command
+	minibuffer-local-completion-map)
+	;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+	(setq sbt:program-options '("-Dsbt.supershell=false"))
+     )
+   #+end_src
 
-    #+begin_src emacs-lisp
-    (use-package dockerfile-mode)
-    #+end_src
 
+**** metals backend for lsp-mode
+
+
+	    (use-package lsp-metals
+	      :ensure t
+	      :custom
+	      ;; Metals claims to support range formatting by default but it supports range
+	      ;; formatting of multiline strings only. You might want to disable it so that
+	      ;; emacs can use indentation provided by scala-mode.
+	      (lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
+	      :hook (scala-mode . lsp)
+	      )
+
+
+
+
+
+
+
+   
 *** yaml
     #+begin_src emacs-lisp
       (use-package yaml-mode)
@@ -618,6 +678,26 @@
       (setq sqlformat-command 'pgformatter)
       (setq sqlformat-args '("-s2" "-g"))
     #+end_src
+
+** Docker
+**** [[https://github.com/Silex/docker.el][docker]]
+     Emacs integration for docker, wheich run docker command from emacs.
+     
+     #+begin_src emacs-lisp
+       (use-package docker
+	 :ensure t
+	 :bind ("C-c d" . docker))
+     #+end_src
+
+
+     
+**** [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]]
+     
+    #+begin_src emacs-lisp
+    (use-package dockerfile-mode)
+    #+end_src
+
+**** 
 
 ** Projectile
 
