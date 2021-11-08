@@ -75,12 +75,12 @@
     :prefix "SPC"
     :global-prefix "C-SPC")
 
-  (rune/leader-keys
-	 "t" '(:ignore t :which-key "toggles")
-	 "tt" '(counsel-load-theme :which-key "choose theme")))
+  ;; (leader-keys
+  ;; 	 "t" '(:ignore t :which-key "toggles")
+  ;; 	 "tt" '(counsel-load-theme :which-key "choose theme")))
 
 
-     (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+      (global-set-key (kbd "C-M-j") 'counsel-switch-buffer))
 
 (use-package doom-themes
   :config
@@ -122,20 +122,35 @@
   :config
   (ivy-mode t))
 
-
 (use-package ivy-rich
   :init
-  (ivy-rich-mode 1))
-
+  (ivy-rich-mode 1)
+  )
 
 (use-package counsel
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 ;; ("C-M-j" . counsel-switch-buffer)
-	 ("C-M-l" . counsel-imenu)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history))
+:init
+(setq-default dired-omit-files-p t)
+(setq dired-omit-files "^\\.DS_Store")
+(setq counsel-find-file-ignore-regexp (regexp-opt '(".DS_Store")))
+
+:bind (
+("M-x" . counsel-M-x)
+("C-x b" . counsel-ibuffer)
+("C-x C-f" . counsel-find-file)
+;; ("C-M-j" . counsel-switch-buffer)
+("C-M-l" . counsel-imenu)
+:map minibuffer-local-map
+("C-r" . 'counsel-minibuffer-history))
+)
+
+(use-package dired			
+  :ensure nil
+  :commands (dired dired-jump)
+  :bind (("C-x C-j" . dired-jump))
+  :config
+  ;; (evil-collection-define-key 'normal 'dired-mode-map
+  ;;   "h" 'dired-up-directory
+  ;;   "l" 'dired-find-file)
   )
 
 (use-package helpful
@@ -223,6 +238,7 @@
   (auto-fill-mode 0)
   (visual-line-mode 1)
 
+  (setq org-startup-truncated nil)
   (setq evil-auto-indent nil)
   (setq org-ellipsis " ▾"
 	org-hide-emphasis-markers t)
@@ -268,6 +284,7 @@
      '((emacs-lisp . t)
        (python . t)
        (shell . t)
+       (lisp . t)
        )
      )
     )
@@ -281,6 +298,7 @@
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
 (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
+(add-to-list 'org-structure-template-alist '("cl" . "src lisp"))
 
 ;; Automatically tangle our Emacs.org config file when we save it
 (defun efs/org-babel-tangle-config ()
@@ -351,6 +369,12 @@
 (add-hook 'ess-julia-mode-hook #'lsp-mode)
 
 (use-package go-mode)
+
+(use-package slime
+  :config
+  (setq inferior-lisp-program "clisp")
+  (setq slime-net-coding-system 'utf-8-unix)
+  )
 
 (use-package lsp-metals
   :ensure t

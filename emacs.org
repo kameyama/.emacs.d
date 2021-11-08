@@ -25,7 +25,39 @@
     (unless  (package-installed-p 'use-package)
       (package-install 'use-package))
 
+
+   #+end_src
+
+   
+*** [[https://github.com/jwiegley/use-package][use-packege]]
+
+  #+begin_src emacs-lisp
     (require 'use-package)
+  #+end_src
+   
+**** usage
+     :init is executed before a package is loaded.
+     :config is executed after apackage is loaded.
+     :bind defines key-bindngs.
+     :bind-keymap
+     :mode
+     :defer
+     :interpreter
+     :magic
+     :hook
+     :commands
+     :custom allows customazation of packegee custom variables.
+     :custom-face
+     :if
+     :endure
+     :after
+     :load-path
+     :requires
+     :no-require
+     :defines
+ 
+****  others
+  #+begin_src emacs-lisp
 
     ;; On non-Guix systems, "ensure" packages by default
     (setq use-package-always-ensure t)
@@ -37,9 +69,8 @@
     ;; auto save files in the same path as it uses for sessions
     (setq auto-save-file-name-transforms
 	  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-   #+end_src
-
-
+  #+end_src
+  
 ** Package Updates
 
    #+begin_src emacs-lisp
@@ -105,12 +136,12 @@
 	 :prefix "SPC"
 	 :global-prefix "C-SPC")
 
-       (rune/leader-keys
-	      "t" '(:ignore t :which-key "toggles")
-	      "tt" '(counsel-load-theme :which-key "choose theme")))
+       ;; (leader-keys
+       ;; 	 "t" '(:ignore t :which-key "toggles")
+       ;; 	 "tt" '(counsel-load-theme :which-key "choose theme")))
 
 
-	  (global-set-key (kbd "C-M-j") 'counsel-switch-buffer)
+           (global-set-key (kbd "C-M-j") 'counsel-switch-buffer))
 
    #+end_src
   
@@ -150,7 +181,7 @@
 
    #+end_src
 
-** Ivy and Counsel
+** Ivy
 
    #+begin_src emacs-lisp
 
@@ -173,23 +204,49 @@
        :config
        (ivy-mode t))
 
-
      (use-package ivy-rich
        :init
-       (ivy-rich-mode 1))
-
-
-     (use-package counsel
-       :bind (("M-x" . counsel-M-x)
-	      ("C-x b" . counsel-ibuffer)
-	      ("C-x C-f" . counsel-find-file)
-	      ;; ("C-M-j" . counsel-switch-buffer)
-	      ("C-M-l" . counsel-imenu)
-	      :map minibuffer-local-map
-	      ("C-r" . 'counsel-minibuffer-history))
+       (ivy-rich-mode 1)
        )
    #+end_src
 
+** Counsel
+   #+begin_src emacs-lisp
+
+     (use-package counsel
+     :init
+     (setq-default dired-omit-files-p t)
+     (setq dired-omit-files "^\\.DS_Store")
+     (setq counsel-find-file-ignore-regexp (regexp-opt '(".DS_Store")))
+     
+     :bind (
+     ("M-x" . counsel-M-x)
+     ("C-x b" . counsel-ibuffer)
+     ("C-x C-f" . counsel-find-file)
+     ;; ("C-M-j" . counsel-switch-buffer)
+     ("C-M-l" . counsel-imenu)
+     :map minibuffer-local-map
+     ("C-r" . 'counsel-minibuffer-history))
+     )
+   #+end_src
+
+
+  
+** Dired
+
+   #+begin_src emacs-lisp
+     (use-package dired			
+       :ensure nil
+       :commands (dired dired-jump)
+       :bind (("C-x C-j" . dired-jump))
+       :config
+       ;; (evil-collection-define-key 'normal 'dired-mode-map
+       ;;   "h" 'dired-up-directory
+       ;;   "l" 'dired-find-file)
+       )
+
+   #+end_src
+   
 ** Helpful
 
    #+begin_src emacs-lisp
@@ -303,7 +360,8 @@
       (variable-pitch-mode 1)
       (auto-fill-mode 0)
       (visual-line-mode 1)
-
+  
+      (setq org-startup-truncated nil)
       (setq evil-auto-indent nil)
       (setq org-ellipsis " ▾"
 	    org-hide-emphasis-markers t)
@@ -356,12 +414,15 @@
 	 '((emacs-lisp . t)
 	   (python . t)
 	   (shell . t)
+       	   (lisp . t)
 	   )
 	 )
 	)
 
     (setq org-confirm-babel-evaluate nil)
   #+end_src
+
+
 
 *** Structure Templates
     
@@ -373,6 +434,7 @@
     (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
     (add-to-list 'org-structure-template-alist '("py" . "src python"))
     (add-to-list 'org-structure-template-alist '("jl" . "src julia"))
+    (add-to-list 'org-structure-template-alist '("cl" . "src lisp"))
   #+end_src
 
 ** Auto tangle
@@ -504,6 +566,17 @@
       (use-package go-mode)
     #+end_src
 
+*** Common Lisp
+    
+    #+begin_src emacs-lisp
+      (use-package slime
+	:config
+	(setq inferior-lisp-program "clisp")
+	(setq slime-net-coding-system 'utf-8-unix)
+	)
+    #+end_src
+
+
 
 *** Scala
 
@@ -596,3 +669,4 @@
    
    
  
+  
