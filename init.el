@@ -358,15 +358,32 @@
 	    :custom
 	    (python-shell-interpreter "python3"))
 
-(quelpa '(lsp-julia :fetcher github
-		    :repo "non-Jedi/lsp-julia"
-		    :files (:defaults "languageserver")))
+(use-package lsp-docker
+  :custom
+  (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
 
-(use-package lsp-julia
-  :config
-  (setq lsp-julia-default-environment "~/.julia/environments/v1.6"))
+  (setq lsp-docker-client-configs
+	'((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
+	  (:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
+	  (:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
+	  ))
 
-(add-hook 'ess-julia-mode-hook #'lsp-mode)
+  (lsp-docker-init-clients
+   :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
+   :client-packages lsp-docker-client-packages
+   :client-configs lsp-docker-client-configs)
+  )
+
+(set-language-environment "UTF-8")
+
+(require 'eglot)
+(add-hook 'julia-mode-hook 'eglot-ensure)
+
+(require 'julia-mode)
+(require 'julia-repl)
+(add-hook 'julia-mode-hook 'julia-repl-mode)
+(add-to-list 'eglot-server-programs
+             '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
 (use-package go-mode)
 
@@ -376,22 +393,34 @@
   (setq slime-net-coding-system 'utf-8-unix)
   )
 
-(use-package lsp-metals
-  :ensure t
-  :custom
-  ;; Metals claims to support range formatting by default but it supports range
-  ;; formatting of multiline strings only. You might want to disable it so that
-  ;; emacs can use indentation provided by scala-mode.
-  (lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
-  :hook (scala-mode . lsp))
+(use-package scala-mode
+  :interpreter
+    ("scala" . scala-mode))
 
-(use-package dockerfile-mode)
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+   (setq sbt:program-options '("-Dsbt.supershell=false"))
+)
 
 (use-package yaml-mode)
 
 (use-package sqlformat)
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
+
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker))
+
+(use-package dockerfile-mode)
 
 (use-package projectile
   :diminish projectile-mode
