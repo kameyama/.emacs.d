@@ -680,6 +680,7 @@
 
 
 *** SQL
+    
     require pgformatter. To install it, run next.
     
     #+begin_src shell
@@ -692,6 +693,14 @@
       (setq sqlformat-command 'pgformatter)
       (setq sqlformat-args '("-s2" "-g"))
     #+end_src
+
+*** Markdown
+    #+begin_src emacs-lisp
+	    (use-package markdown-preview-mode
+)
+    #+end_src
+
+
 
 ** Docker
 **** [[https://github.com/Silex/docker.el][docker]]

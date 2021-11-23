@@ -425,6 +425,9 @@
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
 
+(use-package markdown-preview-mode
+)
+
 (use-package docker
   :ensure t
   :bind ("C-c d" . docker))
@@ -458,16 +461,3 @@
   :commands (magit-status magit-get-current-branch)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(docker sbt-mode yaml-mode which-key use-package sqlformat slime rainbow-delimiters quelpa python-mode org-bullets no-littering magit lsp-ui lsp-metals lsp-julia lsp-ivy lsp-docker julia-repl ivy-rich init-loader helpful go-mode general exec-path-from-shell evil-nerd-commenter evil-collection eterm-256color eglot doom-themes doom-modeline dockerfile-mode dash-functional counsel-projectile company-box auto-package-update)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
