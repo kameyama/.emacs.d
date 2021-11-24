@@ -301,15 +301,13 @@
       (setq evil-want-keybinding nil)
       ;; (setq evil-want-C-u-scroll t)
       (setq evil-want-C-i-jump nil)
-
       ;; cursor colors
       (setq evil-normal-state-cursor '("cyan" box)) 
       (setq evil-emacs-state-cursor '("orange" box))
-      (setq evil-visual-state-cursor '("yellow" box))
-      (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
 
       :config
       (evil-mode 1)
+      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
 
       ;; global  
       ;; Use visual line motions even outside of visual-line-mode buffers
@@ -321,30 +319,23 @@
       (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
       (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
 
-
       ;; normal state
       ;; C-f, C-b, C-n,C-p bindings in normal state
       (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
       (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
       (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
       (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-      (define-key evil-normal-state-map (kbd "C-a") 'evil-beginning-of-line)
-      (define-key evil-normal-state-map (kbd "C-e") 'evil-end-of-line)
-      (define-key evil-normal-state-map (kbd "C-k") 'kill-line)
-      (define-key evil-normal-state-map (kbd "C-y") 'yank)
-
+      (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
 
       ;; visual state
       (define-key evil-visual-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
       (define-key evil-visual-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
       (define-key evil-visual-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
       (define-key evil-visual-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-      (define-key evil-visual-state-map (kbd "C-a") 'evil-beginning-of-line)
-      (define-key evil-visual-state-map (kbd "C-e") 'evil-end-of-line)
-
 
       (evil-set-initial-state 'messages-buffer-mode 'normal)
       (evil-set-initial-state 'dashboard-mode 'normal))
+
 
     (defalias 'evil-insert-state 'evil-emacs-state)
 
@@ -353,12 +344,7 @@
       :after evil
       :config
       (evil-collection-init))
-
   #+end_src
-
-  org-modeではnormal-stateでC-pはorg-backward-heading-same-levelが優先される設定になっている. 対処法不明. 
-
-
 
 
 * Org
@@ -584,16 +570,16 @@
 *** Julia
 
     #+begin_src emacs-lisp
-      (set-language-environment "UTF-8")
+(set-language-environment "UTF-8")
 
-      (use-package eglot)
-      (add-hook 'julia-mode-hook 'eglot-ensure)
+(require 'eglot)
+(add-hook 'julia-mode-hook 'eglot-ensure)
 
-      (use-package julia-mode)
-      (use-package julia-repl)
-      (add-hook 'julia-mode-hook 'julia-repl-mode)
-      (add-to-list 'eglot-server-programs
-		   '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+(require 'julia-mode)
+(require 'julia-repl)
+(add-hook 'julia-mode-hook 'julia-repl-mode)
+(add-to-list 'eglot-server-programs
+             '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
     #+end_src
 
     
@@ -693,6 +679,12 @@
       (setq sqlformat-args '("-s2" "-g"))
     #+end_src
 
+    
+*** CSV
+    #+begin_src emacs-lisp
+      (use-package csv-mode)
+    #+end_src
+
 ** Docker
 **** [[https://github.com/Silex/docker.el][docker]]
      Emacs integration for docker, wheich run docker command from emacs.
@@ -764,4 +756,3 @@
    
  
   
-   
