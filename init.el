@@ -186,15 +186,13 @@
   (setq evil-want-keybinding nil)
   ;; (setq evil-want-C-u-scroll t)
   (setq evil-want-C-i-jump nil)
-
   ;; cursor colors
   (setq evil-normal-state-cursor '("cyan" box)) 
   (setq evil-emacs-state-cursor '("orange" box))
-  (setq evil-visual-state-cursor '("yellow" box))
-  (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
 
   :config
   (evil-mode 1)
+  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
 
   ;; global  
   ;; Use visual line motions even outside of visual-line-mode buffers
@@ -206,30 +204,23 @@
   (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
   (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
 
-
   ;; normal state
   ;; C-f, C-b, C-n,C-p bindings in normal state
   (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
   (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
   (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
   (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-  (define-key evil-normal-state-map (kbd "C-a") 'evil-beginning-of-line)
-  (define-key evil-normal-state-map (kbd "C-e") 'evil-end-of-line)
-  (define-key evil-normal-state-map (kbd "C-k") 'kill-line)
-  (define-key evil-normal-state-map (kbd "C-y") 'yank)
-
+  (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
 
   ;; visual state
   (define-key evil-visual-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
   (define-key evil-visual-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
   (define-key evil-visual-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
   (define-key evil-visual-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-  (define-key evil-visual-state-map (kbd "C-a") 'evil-beginning-of-line)
-  (define-key evil-visual-state-map (kbd "C-e") 'evil-end-of-line)
-
 
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
+
 
 (defalias 'evil-insert-state 'evil-emacs-state)
 
@@ -387,14 +378,14 @@
 
 (set-language-environment "UTF-8")
 
-(use-package eglot)
+(require 'eglot)
 (add-hook 'julia-mode-hook 'eglot-ensure)
 
-(use-package julia-mode)
-(use-package julia-repl)
+(require 'julia-mode)
+(require 'julia-repl)
 (add-hook 'julia-mode-hook 'julia-repl-mode)
 (add-to-list 'eglot-server-programs
-	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+             '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
 (use-package go-mode)
 
@@ -432,6 +423,8 @@
 
 (use-package jupyter)
 
+(use-package csv-mode)
+
 (use-package docker
   :ensure t
   :bind ("C-c d" . docker))
@@ -465,3 +458,16 @@
   :commands (magit-status magit-get-current-branch)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(csv-mode yaml-mode which-key use-package sqlformat slime sbt-mode rainbow-delimiters quelpa python-mode org-bullets no-littering markdown-preview-mode magit lsp-ui lsp-metals lsp-julia lsp-ivy lsp-docker jupyter julia-repl ivy-rich init-loader helpful go-mode general exec-path-from-shell evil-nerd-commenter evil-collection eterm-256color eglot doom-themes doom-modeline dockerfile-mode docker dash-functional counsel-projectile company-box auto-package-update)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
