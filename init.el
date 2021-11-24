@@ -294,8 +294,10 @@
        (python . t)
        (shell . t)
        (lisp . t)
+       (jupyter . t)
        )
      )
+(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
     )
 
 (setq org-confirm-babel-evaluate nil)
@@ -427,6 +429,8 @@
 
 (use-package markdown-preview-mode
 )
+
+(use-package jupyter)
 
 (use-package docker
   :ensure t

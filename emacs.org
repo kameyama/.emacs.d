@@ -374,7 +374,7 @@
       (variable-pitch-mode 1)
       (auto-fill-mode 0)
       (visual-line-mode 1)
-  
+
       (setq org-startup-truncated nil)
       (setq evil-auto-indent nil)
       (setq org-ellipsis " ▾"
@@ -422,18 +422,20 @@
 *** Babel Languages
    
   #+begin_src emacs-lisp
-    (with-eval-after-load 'org
-	(org-babel-do-load-languages
-	 'org-babel-load-languages
-	 '((emacs-lisp . t)
-	   (python . t)
-	   (shell . t)
-       	   (lisp . t)
-	   )
-	 )
-	)
+	(with-eval-after-load 'org
+	    (org-babel-do-load-languages
+	     'org-babel-load-languages
+	     '((emacs-lisp . t)
+	       (python . t)
+	       (shell . t)
+	       (lisp . t)
+	       (jupyter . t)
+	       )
+	     )
+	(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+	    )
 
-    (setq org-confirm-babel-evaluate nil)
+	(setq org-confirm-babel-evaluate nil)
   #+end_src
 
 
@@ -701,7 +703,13 @@
     #+end_src
 
 
+*** Jupyter
+    #+begin_src emacs-lisp
+	    (use-package jupyter)
+    #+end_src
 
+
+    
 ** Docker
 **** [[https://github.com/Silex/docker.el][docker]]
      Emacs integration for docker, wheich run docker command from emacs.
