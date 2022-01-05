@@ -572,29 +572,40 @@
 *** Julia
 
     #+begin_src emacs-lisp
-(set-language-environment "UTF-8")
+      ;; (set-language-environment "UTF-8")
 
-(require 'eglot)
-(add-hook 'julia-mode-hook 'eglot-ensure)
+      ;; (require 'eglot)
+      ;; (add-hook 'julia-mode-hook 'eglot-ensure)
 
-(require 'julia-mode)
-(require 'julia-repl)
-(add-hook 'julia-mode-hook 'julia-repl-mode)
-(add-to-list 'eglot-server-programs
-             '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+      ;; (require 'julia-mode)
+      ;; (require 'julia-repl)
+      ;; (add-hook 'julia-mode-hook 'julia-repl-mode)
+      ;; (add-to-list 'eglot-server-programs
+      ;;              '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
     #+end_src
 
+
+    #+begin_src emacs-lisp
+      (use-package eglot)
+      (add-hook 'julia-mode-hook 'eglot-ensure)
+      (use-package julia-mode)
+      (require 'julia-repl)
+      (add-hook 'julia-mode-hook 'julia-repl-mode)
+      (add-to-list 'eglot-server-programs
+		   '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+    #+end_src
+
+
     
-    # #+begin_src emacs-lisp
+     # #+begin_src emacs-lisp
+     #   (use-package lsp-julia
+     # 	       :config
+     # 	       (setq lsp-julia-default-environment "~/.julia/environments/v1.7"))
 
-    #   (use-package lsp-julia
-    # 	:config
-    # 	(setq lsp-julia-default-environment "~/.julia/environments/v1.6"))
-    # #+end_src
+     #   (add-hook 'ess-julia-mode-hook #'lsp-mode)
+     # #+end_src
 
-    # #+begin_src emacs-lisp
-    #   (add-hook 'julia-mode-hook #'lsp-mode)
-    # #+end_src
+
     
 *** Go
     #+begin_src emacs-lisp
@@ -685,9 +696,18 @@
 
 *** Markdown
     #+begin_src emacs-lisp
-	    (use-package markdown-preview-mode
-)
+      (use-package markdown-mode
+	:ensure t
+	:commands (markdown-mode gfm-mode)
+	:mode (("README\\.md\\'" . gfm-mode)
+	       ("\\.md\\'" . markdown-mode)
+	       ("\\.markdown\\'" . markdown-mode))
+	:init (setq markdown-command "multimarkdown"))
+
+      (use-package markdown-preview-mode)
     #+end_src
+
+
 
 
 *** Jupyter
@@ -696,13 +716,24 @@
     #+end_src
 
 
+
+
     
 
     
 *** CSV
+    
     #+begin_src emacs-lisp
       (use-package csv-mode)
     #+end_src
+
+*** digdag
+    #+begin_src emacs-lisp
+      (use-package digdag-mode)
+    #+end_src
+
+
+
 
 
 ** Docker

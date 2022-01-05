@@ -376,16 +376,24 @@
    :client-configs lsp-docker-client-configs)
   )
 
-(set-language-environment "UTF-8")
+;; (set-language-environment "UTF-8")
 
-(require 'eglot)
+;; (require 'eglot)
+;; (add-hook 'julia-mode-hook 'eglot-ensure)
+
+;; (require 'julia-mode)
+;; (require 'julia-repl)
+;; (add-hook 'julia-mode-hook 'julia-repl-mode)
+;; (add-to-list 'eglot-server-programs
+;;              '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+
+(use-package eglot)
 (add-hook 'julia-mode-hook 'eglot-ensure)
-
-(require 'julia-mode)
+(use-package julia-mode)
 (require 'julia-repl)
 (add-hook 'julia-mode-hook 'julia-repl-mode)
 (add-to-list 'eglot-server-programs
-             '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
 (use-package go-mode)
 
@@ -418,12 +426,21 @@
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
 
-(use-package markdown-preview-mode
-)
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
+(use-package markdown-preview-mode)
 
 (use-package jupyter)
 
 (use-package csv-mode)
+
+(use-package digdag-mode)
 
 (use-package docker
   :ensure t
@@ -458,16 +475,3 @@
   :commands (magit-status magit-get-current-branch)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(csv-mode yaml-mode which-key use-package sqlformat slime sbt-mode rainbow-delimiters quelpa python-mode org-bullets no-littering markdown-preview-mode magit lsp-ui lsp-metals lsp-julia lsp-ivy lsp-docker jupyter julia-repl ivy-rich init-loader helpful go-mode general exec-path-from-shell evil-nerd-commenter evil-collection eterm-256color eglot doom-themes doom-modeline dockerfile-mode docker dash-functional counsel-projectile company-box auto-package-update)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
