@@ -376,16 +376,24 @@
    :client-configs lsp-docker-client-configs)
   )
 
-(set-language-environment "UTF-8")
+;; (set-language-environment "UTF-8")
 
-(require 'eglot)
+;; (require 'eglot)
+;; (add-hook 'julia-mode-hook 'eglot-ensure)
+
+;; (require 'julia-mode)
+;; (require 'julia-repl)
+;; (add-hook 'julia-mode-hook 'julia-repl-mode)
+;; (add-to-list 'eglot-server-programs
+;;              '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+
+(use-package eglot)
 (add-hook 'julia-mode-hook 'eglot-ensure)
-
-(require 'julia-mode)
+(use-package julia-mode)
 (require 'julia-repl)
 (add-hook 'julia-mode-hook 'julia-repl-mode)
 (add-to-list 'eglot-server-programs
-             '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
 (use-package go-mode)
 
@@ -418,12 +426,21 @@
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
 
-(use-package markdown-preview-mode
-)
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
+(use-package markdown-preview-mode)
 
 (use-package jupyter)
 
 (use-package csv-mode)
+
+(use-package digdag-mode)
 
 (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
 (setq auto-mode-alist
@@ -465,6 +482,10 @@
 (setq dviprint-command-format "/usr/bin/open -a \"Adobe Acrobat Reader DC\" `echo %s | gsed -e \"s/\\.[^.]*$/\\.pdf/\"`")
 
   (auto-fill-mode -1)
+
+(use-package terraform-mode
+  :hook (terraform-mode-hook . #'terraform-format-on-save-mode)
+)
 
 (use-package docker
   :ensure t
