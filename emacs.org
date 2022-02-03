@@ -2,10 +2,17 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+STARTUP: fold
 
+
+emacsのinit.elをorg-modeを使って管理する. saveすると自動的にemacs-lisp code block内のコードがinit.elにinit.elが生成される. 
+
+
 * Packege System
 
-** General 
-  #+begin_src emacs-lisp
+** General
+
+   パッケージをリポジトリに追加する.
+   
+   #+begin_src emacs-lisp
     ;; init.el is created from emacs.org which emacs settings.
     ;; Do NOT modify this file.
 
@@ -31,11 +38,15 @@
    
 *** [[https://github.com/jwiegley/use-package][use-packege]]
 
+    パッケージの使用を可読性高く書くことができるマクロ. [[https://github.com/conao3/leaf.el][leaf]]というuse-packageの代替パッケージが存在する. こっちの方がモダンかも.
+    
   #+begin_src emacs-lisp
     (require 'use-package)
   #+end_src
    
 **** usage
+     (require 'パッケージ名)の代わりに(use-package パッケージ名)でパッケージを使うことができる. キーワード引数使うこともできる. 
+     
      :init is executed before a package is loaded.
      :config is executed after apackage is loaded.
      :bind defines key-bindngs.
@@ -55,8 +66,12 @@
      :requires
      :no-require
      :defines
- 
-****  others
+
+     
+***** fast startup
+      requireでpackageを使う場合autoloadで遅延ロードできる. use-packageの場合は:commands, :bind, :mode, :interpreter, :deferで設定される項目が遅延ロードされる. 
+      
+**** others
   #+begin_src emacs-lisp
 
     ;; On non-Guix systems, "ensure" packages by default
@@ -70,6 +85,7 @@
     (setq auto-save-file-name-transforms
 	  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   #+end_src
+
   
 ** Package Updates
 
@@ -727,10 +743,58 @@
       (use-package csv-mode)
     #+end_src
 
+
 *** digdag
     #+begin_src emacs-lisp
       (use-package digdag-mode)
     #+end_src
+
+*** Tex
+
+    #+begin_src emacs-lisp
+(autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
+(setq auto-mode-alist
+      (append '(("\\.tex$" . yatex-mode)
+                ("\\.ltx$" . yatex-mode)
+                ("\\.cls$" . yatex-mode)
+                ("\\.sty$" . yatex-mode)
+                ("\\.clo$" . yatex-mode)
+                ("\\.bbl$" . yatex-mode)) auto-mode-alist))
+
+(setq YaTeX-inhibit-prefix-letter t)
+(setq YaTeX-kanji-code nil)
+(setq YaTeX-latex-message-code 'utf-8)
+(setq YaTeX-use-LaTeX2e t)
+(setq YaTeX-use-AMS-LaTeX t)
+(setq YaTeX-dvi2-command-ext-alist
+      '(("Preview\\|TeXShop\\|TeXworks\\|Skim\\|mupdf\\|xpdf\\|Firefox\\|Adobe" . ".pdf")))
+
+(setq tex-command "/Library/TeX/texbin/ptex2pdf -u -l -ot '-synctex=1'");uplatex
+
+;(setq tex-command "/Library/TeX/texbin/ptex2pdf -l -ot '-synctex=1'");platex
+;(setq tex-command "/Library/TeX/texbin/platex");platex
+
+;(setq tex-command "xelatex -synctex=1");XeLatexでコンパイル
+;(setq tex-command "/Library/TeX/texbin/latex");latex
+
+;(setq bibtex-command "/Library/TeX/texbin/latexmk -e '$latex=q/uplatex %O -synctex=1 %S/' -e '$bibtex=q/upbibtex %O %B/' -e '$biber=q/biber %O --bblencoding=utf8 -u -U --output_safechars %B/' -e '$makeindex=q/upmendex %O -o %D %S/' -e '$dvipdf=q/dvipdfmx %O -o %D %S/' -norc -gg -pdfdvi")
+(setq bibtex-command (cond ((string-match "uplatex\\|-u" tex-command) "/Library/TeX/texbin/upbibtex")((string-match "platex" tex-command) "/Library/TeX/texbin/pbibtex")((string-match "lualatex\\|luajitlatex\\|xelatex" tex-command) "/Library/TeX/texbin/bibtexu")((string-match "pdflatex\\|latex" tex-command) "/Library/TeX/texbin/bibtex")(t "/Library/TeX/texbin/pbibtex")))
+
+
+(setq makeindex-command (cond ((string-match "uplatex\\|-u" tex-command) "/Library/TeX/texbin/mendex")
+			      ((string-match "platex" tex-command) "/Library/TeX/texbin/mendex")
+			      ((string-match "lualatex\\|luajitlatex\\|xelatex" tex-command) "/Library/TeX/texbin/texindy")
+			      ((string-match "pdflatex\\|latex" tex-command) "/Library/TeX/texbin/makeindex")
+			      (t "/Library/TeX/texbin/mendex")))
+  ;; (setq dvi2-command "/usr/bin/open -a Preview")
+(setq dvi2-command "/usr/bin/open -a Skim")
+(setq tex-pdfview-command "/usr/bin/open -a Skim")
+(setq dviprint-command-format "/usr/bin/open -a \"Adobe Acrobat Reader DC\" `echo %s | gsed -e \"s/\\.[^.]*$/\\.pdf/\"`")
+
+  (auto-fill-mode -1)
+    #+end_src
+
+
 
  
 
@@ -817,5 +881,3 @@
    
    
    
- 
-  
