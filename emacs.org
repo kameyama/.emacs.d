@@ -732,10 +732,22 @@
       (use-package digdag-mode)
     #+end_src
 
+ 
 
 
+*** terraform
+    #+begin_src emacs-lisp
+	    (use-package terraform-mode
+	:hook (terraform-mode-hook . #'terraform-format-on-save-mode)
+      )
+    #+end_src
 
 
+ 
+
+ 
+
+    
 ** Docker
 **** [[https://github.com/Silex/docker.el][docker]]
      Emacs integration for docker, wheich run docker command from emacs.

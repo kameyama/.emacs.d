@@ -442,6 +442,10 @@
 
 (use-package digdag-mode)
 
+(use-package terraform-mode
+  :hook (terraform-mode-hook . #'terraform-format-on-save-mode)
+)
+
 (use-package docker
   :ensure t
   :bind ("C-c d" . docker))
