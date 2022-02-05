@@ -7,8 +7,8 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 
 * Packege System
-
-** General
+  
+** Pacage Setting
 
    パッケージをリポジトリに追加する.
    
@@ -36,23 +36,27 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
    #+end_src
 
    
-*** [[https://github.com/jwiegley/use-package][use-packege]]
+** [[https://github.com/jwiegley/use-package][use-packege]]
 
     パッケージの使用を可読性高く書くことができるマクロ. [[https://github.com/conao3/leaf.el][leaf]]というuse-packageの代替パッケージが存在する. こっちの方がモダンかも.
     
   #+begin_src emacs-lisp
-    (require 'use-package)
+
+    (eval-when-compile
+	(require 'use-package))
   #+end_src
+
    
 **** usage
-     (require 'パッケージ名)の代わりに(use-package パッケージ名)でパッケージを使うことができる. キーワード引数使うこともできる. 
+     (require 'パッケージ名)の代わりに(use-package パッケージ名)でパッケージを使うことができる. キーワード引数使うこともできる.
      
+      :defer tで遅延ロードする. :commands, :bind, :bind*, :bind-keymap, :bind-keymap*, :mode, :interpreter, :hookが設定してあると自動的にtになる
+    
      :init is executed before a package is loaded.
      :config is executed after apackage is loaded.
      :bind defines key-bindngs.
      :bind-keymap
      :mode
-     :defer
      :interpreter
      :magic
      :hook
@@ -108,7 +112,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
        (exec-path-from-shell-initialize))
    #+end_src
    
-
+   
 * Emacs General Settings
   
 ** UI
@@ -176,13 +180,14 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 ** Modeline
    
   #+begin_src emacs-lisp
-     (use-package all-the-icons)
+	 (use-package all-the-icons
+	   :defer t)
 
-	  (use-package doom-modeline
-	    :ensure t
-	    :init (doom-modeline-mode 1)
-	    :custom ((doom-modeline-hight 15))
-	    )
+	      (use-package doom-modeline
+		:ensure t
+		:init (doom-modeline-mode 1)
+		:custom ((doom-modeline-hight 15))
+		)
 
   #+end_src
 
@@ -312,6 +317,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
   #+begin_src emacs-lisp
 
     (use-package evil
+      :defer nil
       :init
       (setq evil-want-integration t)
       (setq evil-want-keybinding nil)
@@ -321,9 +327,29 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
       (setq evil-normal-state-cursor '("cyan" box)) 
       (setq evil-emacs-state-cursor '("orange" box))
 
+      :bind (
+	     :map evil-emacs-state-map 
+	     ("C-h" . evil-delete-backward-char-and-join)
+	     ("<escape>" . evil-normal-state)
+
+	     :map evil-normal-state-map
+	     ("C-f" . evil-forward-char) ; C-f is evil-scroll-page-down by default
+	     ("C-b" . evil-backward-char) ; C-b is evil-scroll-page-up by default
+	     ("C-n" . evil-next-visual-line) ; C-n is evil-paste-pop-next by default
+	     ("C-p" . evil-previous-visual-line) ; C-p is evil-paste-pop  by default
+
+	     :map evil-visual-state-map
+	     ("C-f" . evil-forward-char) ; C-f is evil-scroll-page-down by default
+	     ("C-b" . evil-backward-char) ; C-b is evil-scroll-page-up by default
+	     ("C-n" . evil-next-visual-line) ; C-n is evil-paste-pop-next by default
+	     ("C-p" . evil-previous-visual-line) ; C-p is evil-paste-pop  by default
+
+	     :map evil-insert-state-map
+	     ("C-g" . evil-normal-state)
+	     )
       :config
       (evil-mode 1)
-      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
 
       ;; global  
       ;; Use visual line motions even outside of visual-line-mode buffers
@@ -331,24 +357,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
       ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
 
-      ;; emacs state
-      (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-      (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
-
-      ;; normal state
-      ;; C-f, C-b, C-n,C-p bindings in normal state
-      (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
-      (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
-      (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
-      (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
       (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
-
-      ;; visual state
-      (define-key evil-visual-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
-      (define-key evil-visual-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
-      (define-key evil-visual-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
-      (define-key evil-visual-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-
       (evil-set-initial-state 'messages-buffer-mode 'normal)
       (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -361,6 +370,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
       :config
       (evil-collection-init))
   #+end_src
+
 
 
 * Org
@@ -469,7 +479,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
  #+end_src
-
+ 
 
 * Develepment
 
@@ -540,7 +550,8 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 *** Quicker symbol searching with lsp-ivy
     #+begin_src emacs-lisp
-      (use-package lsp-ivy)
+	    (use-package lsp-ivy
+	      :defer t)
     #+end_src
 
 *** Commenting lines
@@ -565,6 +576,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 *** Python-docker
     #+begin_src emacs-lisp
       (use-package lsp-docker
+	:defer t
 	:custom
 	(defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
 
@@ -602,13 +614,15 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 
     #+begin_src emacs-lisp
-      (use-package eglot)
-      (add-hook 'julia-mode-hook 'eglot-ensure)
-      (use-package julia-mode)
-      (require 'julia-repl)
-      (add-hook 'julia-mode-hook 'julia-repl-mode)
-      (add-to-list 'eglot-server-programs
-		   '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+      ;; (use-package eglot
+      ;;   :defer t)
+      ;; (add-hook 'julia-mode-hook 'eglot-ensure)
+      ;; (use-package julia-mode
+      ;;   :defer t)
+      ;; (require 'julia-repl)
+      ;; (add-hook 'julia-mode-hook 'julia-repl-mode)
+      ;; (add-to-list 'eglot-server-programs
+      ;; 	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
     #+end_src
 
 
@@ -625,13 +639,15 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     
 *** Go
     #+begin_src emacs-lisp
-      (use-package go-mode)
+	    (use-package go-mode
+	      :defer t)
     #+end_src
 
 *** Common Lisp
     
     #+begin_src emacs-lisp
       (use-package slime
+  :defer t
 	:config
 	(setq inferior-lisp-program "clisp")
 	(setq slime-net-coding-system 'utf-8-unix)
@@ -688,7 +704,8 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
    
 *** yaml
     #+begin_src emacs-lisp
-      (use-package yaml-mode)
+	    (use-package yaml-mode
+	      :defer t)
     #+end_src
 
 
@@ -704,11 +721,12 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
     
     #+begin_src emacs-lisp
-      (use-package sqlformat)
-      (setq sqlformat-command 'pgformatter)
-      (setq sqlformat-args '("-s2" "-g"))
+	    (use-package sqlformat
+	      :defer t)
+	    (setq sqlformat-command 'pgformatter)
+	    (setq sqlformat-args '("-s2" "-g"))
     #+end_src
-
+    
 
 *** Markdown
     #+begin_src emacs-lisp
@@ -724,11 +742,12 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     #+end_src
 
 
-
+    
 
 *** Jupyter
     #+begin_src emacs-lisp
-	    (use-package jupyter)
+		  (use-package jupyter
+		    :defer t)
     #+end_src
 
 
@@ -740,13 +759,15 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 *** CSV
     
     #+begin_src emacs-lisp
-      (use-package csv-mode)
+	    (use-package csv-mode
+	      :defer t)
     #+end_src
 
 
 *** digdag
     #+begin_src emacs-lisp
-      (use-package digdag-mode)
+      ;; (use-package digdag-mode
+      ;;   :defer t)
     #+end_src
 
 *** Tex
@@ -827,7 +848,8 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 **** [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]]
      
     #+begin_src emacs-lisp
-    (use-package dockerfile-mode)
+	  (use-package dockerfile-mode
+	    :defer t)
     #+end_src
 
 **** docker 
@@ -857,6 +879,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     
     #+begin_src emacs-lisp
       (use-package term
+  :defer t
 	:config
 	(setq explicit-shell-file-name "zsh")
 	;;(setq explicit-zsh-args '())

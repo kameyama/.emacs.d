@@ -17,7 +17,8 @@
 (unless  (package-installed-p 'use-package)
   (package-install 'use-package))
 
-(require 'use-package)
+(eval-when-compile
+    (require 'use-package))
 
 ;; On non-Guix systems, "ensure" packages by default
 (setq use-package-always-ensure t)
@@ -89,7 +90,8 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package all-the-icons)
+(use-package all-the-icons
+  :defer t)
 
      (use-package doom-modeline
        :ensure t
@@ -181,6 +183,7 @@
 (set-face-attribute 'default nil :height 150)
 
 (use-package evil
+  :defer nil
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
@@ -190,9 +193,29 @@
   (setq evil-normal-state-cursor '("cyan" box)) 
   (setq evil-emacs-state-cursor '("orange" box))
 
+  :bind (
+	 :map evil-emacs-state-map 
+	 ("C-h" . evil-delete-backward-char-and-join)
+	 ("<escape>" . evil-normal-state)
+
+	 :map evil-normal-state-map
+	 ("C-f" . evil-forward-char) ; C-f is evil-scroll-page-down by default
+	 ("C-b" . evil-backward-char) ; C-b is evil-scroll-page-up by default
+	 ("C-n" . evil-next-visual-line) ; C-n is evil-paste-pop-next by default
+	 ("C-p" . evil-previous-visual-line) ; C-p is evil-paste-pop  by default
+
+	 :map evil-visual-state-map
+	 ("C-f" . evil-forward-char) ; C-f is evil-scroll-page-down by default
+	 ("C-b" . evil-backward-char) ; C-b is evil-scroll-page-up by default
+	 ("C-n" . evil-next-visual-line) ; C-n is evil-paste-pop-next by default
+	 ("C-p" . evil-previous-visual-line) ; C-p is evil-paste-pop  by default
+
+	 :map evil-insert-state-map
+	 ("C-g" . evil-normal-state)
+	 )
   :config
   (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
 
   ;; global  
   ;; Use visual line motions even outside of visual-line-mode buffers
@@ -200,24 +223,7 @@
   ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
 
-  ;; emacs state
-  (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-  (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
-
-  ;; normal state
-  ;; C-f, C-b, C-n,C-p bindings in normal state
-  (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
-  (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
-  (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
-  (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
   (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
-
-  ;; visual state
-  (define-key evil-visual-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
-  (define-key evil-visual-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
-  (define-key evil-visual-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
-  (define-key evil-visual-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
@@ -349,7 +355,8 @@
 (use-package lsp-treemacs
   :after lsp)
 
-(use-package lsp-ivy)
+(use-package lsp-ivy
+  :defer t)
 
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
@@ -361,6 +368,7 @@
 	    (python-shell-interpreter "python3"))
 
 (use-package lsp-docker
+  :defer t
   :custom
   (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
 
@@ -387,21 +395,25 @@
 ;; (add-to-list 'eglot-server-programs
 ;;              '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
-(use-package eglot)
-(add-hook 'julia-mode-hook 'eglot-ensure)
-(use-package julia-mode)
-(require 'julia-repl)
-(add-hook 'julia-mode-hook 'julia-repl-mode)
-(add-to-list 'eglot-server-programs
-	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+;; (use-package eglot
+;;   :defer t)
+;; (add-hook 'julia-mode-hook 'eglot-ensure)
+;; (use-package julia-mode
+;;   :defer t)
+;; (require 'julia-repl)
+;; (add-hook 'julia-mode-hook 'julia-repl-mode)
+;; (add-to-list 'eglot-server-programs
+;; 	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
-(use-package go-mode)
+(use-package go-mode
+  :defer t)
 
 (use-package slime
-  :config
-  (setq inferior-lisp-program "clisp")
-  (setq slime-net-coding-system 'utf-8-unix)
-  )
+:defer t
+      :config
+      (setq inferior-lisp-program "clisp")
+      (setq slime-net-coding-system 'utf-8-unix)
+      )
 
 (use-package scala-mode
   :interpreter
@@ -420,9 +432,11 @@
    (setq sbt:program-options '("-Dsbt.supershell=false"))
 )
 
-(use-package yaml-mode)
+(use-package yaml-mode
+  :defer t)
 
-(use-package sqlformat)
+(use-package sqlformat
+  :defer t)
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
 
@@ -436,11 +450,14 @@
 
 (use-package markdown-preview-mode)
 
-(use-package jupyter)
+(use-package jupyter
+  :defer t)
 
-(use-package csv-mode)
+(use-package csv-mode
+  :defer t)
 
-(use-package digdag-mode)
+;; (use-package digdag-mode
+;;   :defer t)
 
 (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
 (setq auto-mode-alist
@@ -491,7 +508,8 @@
   :ensure t
   :bind ("C-c d" . docker))
 
-(use-package dockerfile-mode)
+(use-package dockerfile-mode
+  :defer t)
 
 (use-package projectile
   :diminish projectile-mode
@@ -508,10 +526,11 @@
   :config (counsel-projectile-mode))
 
 (use-package term
-  :config
-  (setq explicit-shell-file-name "zsh")
-  ;;(setq explicit-zsh-args '())
-  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
+:defer t
+      :config
+      (setq explicit-shell-file-name "zsh")
+      ;;(setq explicit-zsh-args '())
+      (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
 
 (use-package eterm-256color
   :hook (term-mode . eterm-256color-mode))
