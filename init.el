@@ -2,46 +2,72 @@
 ;; Do NOT modify this file.
 
 ;; Initialize package sources
-(require 'package)
 
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			     ("melpa-stable" . "https://stable.melpa.org/packages/")
-			     ("org" . "https://orgmode.org/elpa/")
-			     ("elpa" . "https://elpa.gnu.org/packages/")))
+(eval-and-compile
+  (customize-set-variable
+   'package-archives '(("org" . "https://orgmode.org/elpa/")
+		       ("melpa" . "https://melpa.org/packages/")
+		       ("melpa-stable" . "https://stable.melpa.org/packages/")
+		       ("gnu" . "https://elpa.gnu.org/packages/")
+		       ("elpa" . "https://elpa.gnu.org/packages/")
+		       ))
+  (package-initialize)
+  (unless (package-installed-p 'leaf)
+    (package-refresh-contents)
+    (package-install 'leaf))
 
-(package-initialize)
-(unless package-archive-contents
-      (package-refresh-contents))
+  (leaf leaf-keywords
+    :ensure t
+    :init
+    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
+    (leaf hydra :ensure t)
+    (leaf el-get :ensure t)
+    (leaf blackout :ensure t)
 
-;; Initialize use-package on non-Linux platforms
-(unless  (package-installed-p 'use-package)
-  (package-install 'use-package))
+    :config
+    ;; initialize leaf-keywords.el
+    (leaf-keywords-init)))
 
-(require 'use-package)
+(leaf leaf-tree :ensure t)
+(leaf leaf-convert :ensure t
+  :config (leaf use-package :ensure t))
+(leaf transient-dwim
+  :ensure t
+  :bind (("M-=" . transient-dwim-dispatch)))
+
+(eval-when-compile
+    (require 'use-package))
 
 ;; On non-Guix systems, "ensure" packages by default
 (setq use-package-always-ensure t)
-(use-package quelpa)
+(leaf quelpa
+  :ensure t
+  :require t)
 
-(use-package no-littering)
+
+(leaf no-littering
+  :ensure t
+  :require t)
 
 ;; no-littering doesn't set this by default so we must place
 ;; auto save files in the same path as it uses for sessions
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-(use-package auto-package-update
+(leaf auto-package-update
   :custom
-  (auto-package-update-interval 7)
-  (auto-package-update-prompt-before-update t)
-  (auto-package-update-hide-results t)
+  (auto-package-update-interval . 7)
+  (auto-package-update-prompt-before-update . t)
+  (auto-package-update-hide-results . t)
   :config
   (auto-package-update-maybe)
   (auto-package-update-at-time "09:00"))
 
-(use-package exec-path-from-shell
-  :config
-  (exec-path-from-shell-initialize))
+(leaf exec-path-from-shell
+:ensure t
+:require t
+:config
+(exec-path-from-shell-initialize))
 
 ;; Thanks, but no thanks
 (setq inhibit-startup-message t)
@@ -68,34 +94,33 @@
 ;;ESC Cancels All
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-(use-package general
+(leaf general
+  :ensure t
+  :bind (("C-M-j" . counsel-switch-buffer))
+  :require t
   :config
-  (general-create-definer rune/leader-keys
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
+  (general-create-definer rune/leader-keys :keymaps
+    '(normal insert visual emacs)
+    :prefix "SPC" :global-prefix "C-SPC"))
 
-  ;; (leader-keys
-  ;; 	 "t" '(:ignore t :which-key "toggles")
-  ;; 	 "tt" '(counsel-load-theme :which-key "choose theme")))
-
-
-      (global-set-key (kbd "C-M-j") 'counsel-switch-buffer))
-
-(use-package doom-themes
+(leaf doom-themes
+  :ensure t
+  :require t
   :config
   (load-theme 'doom-dracula t))
 
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+(leaf rainbow-delimiters
+  :ensure t
+  :hook (prog-mode-hook))
 
-(use-package all-the-icons)
+(leaf all-the-icons
+  :ensure t)
 
-     (use-package doom-modeline
-       :ensure t
-       :init (doom-modeline-mode 1)
-       :custom ((doom-modeline-hight 15))
-       )
+(leaf doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-hight . 15))
+  )
 
 (use-package which-key
   :init (which-key-mode)
@@ -180,52 +205,40 @@
 ;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :wigth 'regular)
 (set-face-attribute 'default nil :height 150)
 
-(use-package evil
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  ;; (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-i-jump nil)
-  ;; cursor colors
-  (setq evil-normal-state-cursor '("cyan" box)) 
-  (setq evil-emacs-state-cursor '("orange" box))
+(leaf evil
+  :ensure t
+  :require t
+  :bind ((evil-emacs-state-map
+	  ("C-h" . evil-delete-backward-char-and-join)
+	  ("<escape>" . evil-normal-state))
+	 (evil-normal-state-map
+	  ("C-f" . evil-forward-char)
+	  ("C-b" . evil-backward-char)
+	  ("C-n" . evil-next-visual-line)
+	  ("C-p" . evil-previous-visual-line))
+	 (evil-visual-state-map
+	  ("C-f" . evil-forward-char)
+	  ("C-b" . evil-backward-char)
+	  ("C-n" . evil-next-visual-line)
+	  ("C-p" . evil-previous-visual-line))
+	 (evil-insert-state-map
+	  ("C-g" . evil-normal-state)))
 
+  :pre-setq (evil-want-keybinding . nil)
+  :setq (
+	 (evil-want-integration . t)	    
+	 (evil-want-C-i-jump . nil)
+     (evil-normal-state-cursor . '("cyan" box))
+     (evil-emacs-state-cursor . '("orange" box)))
+  :setq-default ((evil-cross-lines . t))
   :config
   (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-
-  ;; global  
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  ;; (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  ;; (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-
-  ;; emacs state
-  (define-key evil-emacs-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-  (define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
-
-  ;; normal state
-  ;; C-f, C-b, C-n,C-p bindings in normal state
-  (define-key evil-normal-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
-  (define-key evil-normal-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
-  (define-key evil-normal-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
-  (define-key evil-normal-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-  (setq-default evil-cross-lines t) ; Make horizontal movement cross lines
-
-  ;; visual state
-  (define-key evil-visual-state-map (kbd "C-f") 'evil-forward-char) ; C-f is evil-scroll-page-down by default
-  (define-key evil-visual-state-map (kbd "C-b") 'evil-backward-char) ; C-b is evil-scroll-page-up by default
-  (define-key evil-visual-state-map (kbd "C-n") 'evil-next-visual-line) ; C-n is evil-paste-pop-next by default
-  (define-key evil-visual-state-map (kbd "C-p") 'evil-previous-visual-line) ; C-p is evil-paste-pop  by default
-
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
-
-
 (defalias 'evil-insert-state 'evil-emacs-state)
 
 
-(use-package evil-collection
+(leaf evil-collection
   :after evil
   :config
   (evil-collection-init))
@@ -349,7 +362,8 @@
 (use-package lsp-treemacs
   :after lsp)
 
-(use-package lsp-ivy)
+(use-package lsp-ivy
+  :defer t)
 
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
@@ -361,6 +375,7 @@
 	    (python-shell-interpreter "python3"))
 
 (use-package lsp-docker
+  :defer t
   :custom
   (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
 
@@ -387,21 +402,25 @@
 ;; (add-to-list 'eglot-server-programs
 ;;              '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
-(use-package eglot)
-(add-hook 'julia-mode-hook 'eglot-ensure)
-(use-package julia-mode)
-(require 'julia-repl)
-(add-hook 'julia-mode-hook 'julia-repl-mode)
-(add-to-list 'eglot-server-programs
-	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
+;; (use-package eglot
+;;   :defer t)
+;; (add-hook 'julia-mode-hook 'eglot-ensure)
+;; (use-package julia-mode
+;;   :defer t)
+;; (require 'julia-repl)
+;; (add-hook 'julia-mode-hook 'julia-repl-mode)
+;; (add-to-list 'eglot-server-programs
+;; 	     '(julia-mode . ("julia" "-e using LanguageServer, LanguageServer.SymbolServer; runserver()")))
 
-(use-package go-mode)
+(use-package go-mode
+  :defer t)
 
 (use-package slime
-  :config
-  (setq inferior-lisp-program "clisp")
-  (setq slime-net-coding-system 'utf-8-unix)
-  )
+:defer t
+      :config
+      (setq inferior-lisp-program "clisp")
+      (setq slime-net-coding-system 'utf-8-unix)
+      )
 
 (use-package scala-mode
   :interpreter
@@ -420,9 +439,11 @@
    (setq sbt:program-options '("-Dsbt.supershell=false"))
 )
 
-(use-package yaml-mode)
+(use-package yaml-mode
+  :defer t)
 
-(use-package sqlformat)
+(use-package sqlformat
+  :defer t)
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
 
@@ -436,11 +457,14 @@
 
 (use-package markdown-preview-mode)
 
-(use-package jupyter)
+(use-package jupyter
+  :defer t)
 
-(use-package csv-mode)
+(use-package csv-mode
+  :defer t)
 
-(use-package digdag-mode)
+;; (use-package digdag-mode
+;;   :defer t)
 
 (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
 (setq auto-mode-alist
@@ -491,7 +515,8 @@
   :ensure t
   :bind ("C-c d" . docker))
 
-(use-package dockerfile-mode)
+(use-package dockerfile-mode
+  :defer t)
 
 (use-package projectile
   :diminish projectile-mode
@@ -508,10 +533,11 @@
   :config (counsel-projectile-mode))
 
 (use-package term
-  :config
-  (setq explicit-shell-file-name "zsh")
-  ;;(setq explicit-zsh-args '())
-  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
+:defer t
+      :config
+      (setq explicit-shell-file-name "zsh")
+      ;;(setq explicit-zsh-args '())
+      (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
 
 (use-package eterm-256color
   :hook (term-mode . eterm-256color-mode))
