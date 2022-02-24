@@ -3,14 +3,20 @@
 #+STARTUP: fold
 
 
+
+
 emacsのinit.elをorg-modeを使って管理する. saveすると自動的にemacs-lisp code block内のコードがinit.elにinit.elが生成される. 
+
+** iterm2 (emacs cli)
+   Preference > Profile > Keys で+Escを選択するとalt keyがmeta keyになる.
+
 
 
 * Packege System
   
-** Package Setting
-
-    [[https://github.com/conao3/leaf.el][leaf]]というuse-packageの代替パッケージを使って記述する. (use-packageから移行中)
+   
+** [[https://github.com/conao3/leaf.el][leaf]]
+   use-packageの代替パッケージを使って記述する. (use-packageから移行中)
    
    #+begin_src emacs-lisp
 	  ;; init.el is created from emacs.org which emacs settings.
@@ -51,10 +57,6 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 	    :bind (("M-=" . transient-dwim-dispatch)))
 
    #+end_src
-
-
-
-
 
    
 ** [[https://github.com/jwiegley/use-package][use-packege]]
@@ -346,45 +348,50 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 ** Evil
 
   #+begin_src emacs-lisp
-    (leaf evil
-      :ensure t
-      :require t
-      :bind ((evil-emacs-state-map
-	      ("C-h" . evil-delete-backward-char-and-join)
-	      ("<escape>" . evil-normal-state))
-	     (evil-normal-state-map
-	      ("C-f" . evil-forward-char)
-	      ("C-b" . evil-backward-char)
-	      ("C-n" . evil-next-visual-line)
-	      ("C-p" . evil-previous-visual-line))
-	     (evil-visual-state-map
-	      ("C-f" . evil-forward-char)
-	      ("C-b" . evil-backward-char)
-	      ("C-n" . evil-next-visual-line)
-	      ("C-p" . evil-previous-visual-line))
-	     (evil-insert-state-map
-	      ("C-g" . evil-normal-state)))
-      :init  (setq evil-want-keybinding nil)
-      :setq ((evil-want-integration . t)	    
-	     (evil-want-C-i-jump . nil)
-	     (evil-normal-state-cursor '("cyan" box))
-	     (evil-emacs-state-cursor '("orange" box)))
-      :setq-default ((evil-cross-lines . t))
-      :config
-      (evil-mode 1)
-      (evil-set-initial-state 'messages-buffer-mode 'normal)
-      (evil-set-initial-state 'dashboard-mode 'normal))
-    (defalias 'evil-insert-state 'evil-emacs-state)
+	(leaf evil
+	  :ensure t
+	  :require t
+	  :bind ((evil-emacs-state-map
+		  ("C-h" . evil-delete-backward-char-and-join)
+		  ("<escape>" . evil-normal-state))
+		 (evil-normal-state-map
+		  ("C-f" . evil-forward-char)
+		  ("C-b" . evil-backward-char)
+		  ("C-n" . evil-next-visual-line)
+		  ("C-p" . evil-previous-visual-line))
+		 (evil-visual-state-map
+		  ("C-f" . evil-forward-char)
+		  ("C-b" . evil-backward-char)
+		  ("C-n" . evil-next-visual-line)
+		  ("C-p" . evil-previous-visual-line))
+		 (evil-insert-state-map
+		  ("C-g" . evil-normal-state)))
+
+	  :pre-setq (evil-want-keybinding . nil)
+	  :setq (
+		 (evil-want-integration . t)	    
+		 (evil-want-C-i-jump . nil)
+	     (evil-normal-state-cursor . '("cyan" box))
+	     (evil-emacs-state-cursor . '("orange" box)))
+	  :setq-default ((evil-cross-lines . t))
+	  :config
+	  (evil-mode 1)
+	  (evil-set-initial-state 'messages-buffer-mode 'normal)
+	  (evil-set-initial-state 'dashboard-mode 'normal))
+	(defalias 'evil-insert-state 'evil-emacs-state)
 
 
-    (leaf evil-collection
-      :after evil
-      :config
-      (evil-collection-init))
+	(leaf evil-collection
+	  :after evil
+	  :config
+	  (evil-collection-init))
   #+end_src
 
   #+RESULTS:
   : evil-collection
+
+
+
 
 
 

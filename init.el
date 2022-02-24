@@ -223,11 +223,13 @@
 	  ("C-p" . evil-previous-visual-line))
 	 (evil-insert-state-map
 	  ("C-g" . evil-normal-state)))
-  :init  (setq evil-want-keybinding nil)
-  :setq ((evil-want-integration . t)	    
+
+  :pre-setq (evil-want-keybinding . nil)
+  :setq (
+	 (evil-want-integration . t)	    
 	 (evil-want-C-i-jump . nil)
-	 (evil-normal-state-cursor '("cyan" box))
-	 (evil-emacs-state-cursor '("orange" box)))
+     (evil-normal-state-cursor . '("cyan" box))
+     (evil-emacs-state-cursor . '("orange" box)))
   :setq-default ((evil-cross-lines . t))
   :config
   (evil-mode 1)
