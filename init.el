@@ -325,7 +325,7 @@
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
-(use-package lsp-mode
+(leaf lsp-mode
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
@@ -370,26 +370,27 @@
 
 (use-package python-mode
 	    :ensure t
-	    :hook (python-mode . lsp-deferred)
-	    :custom
-	    (python-shell-interpreter "python3"))
+	    :hook  (python-mode . lsp-deferred)
 
-(use-package lsp-docker
-  :defer t
-  :custom
-  (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
+      :custom (python-shell-interpreter  "python3")
+      )
 
-  (setq lsp-docker-client-configs
-	'((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
-	  (:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
-	  (:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
-	  ))
+;; (use-package lsp-docker
+;;   :defer t
+;;   :custom
+;;   (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
 
-  (lsp-docker-init-clients
-   :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
-   :client-packages lsp-docker-client-packages
-   :client-configs lsp-docker-client-configs)
-  )
+;;   (setq lsp-docker-client-configs
+;; 	'((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
+;; 	  (:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
+;; 	  (:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
+;; 	  ))
+
+;;   (lsp-docker-init-clients
+;;    :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
+;;    :client-packages lsp-docker-client-packages
+;;    :client-configs lsp-docker-client-configs)
+;;   )
 
 ;; (set-language-environment "UTF-8")
 
