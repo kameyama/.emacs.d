@@ -368,12 +368,13 @@
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
-(use-package python-mode
-	    :ensure t
-	    :hook  (python-mode . lsp-deferred)
+(leaf python-mode
+			  :ensure t
+      :hook (python-mode-hook . lsp-deferred)
 
-      :custom (python-shell-interpreter  "python3")
-      )
+		  ;;  :custom (python-shell-interpreter  "python3")
+		    )
+      ;(add-hook 'python-mode-hook #'lsp-deferred)
 
 ;; (use-package lsp-docker
 ;;   :defer t

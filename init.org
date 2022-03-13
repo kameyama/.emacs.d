@@ -599,12 +599,13 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     #+end_src
     
     #+begin_src emacs-lisp
-		  (use-package python-mode
-			      :ensure t
-			      :hook  (python-mode . lsp-deferred)
-		
-      			:custom (python-shell-interpreter  "python3")
-			)
+(leaf python-mode
+			  :ensure t
+      :hook (python-mode-hook . lsp-deferred)
+
+		  ;;  :custom (python-shell-interpreter  "python3")
+		    )
+      ;(add-hook 'python-mode-hook #'lsp-deferred)
     #+end_src
 
 
