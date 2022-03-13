@@ -419,6 +419,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
       (setq evil-auto-indent nil)
       (setq org-ellipsis " ▾"
 	    org-hide-emphasis-markers t)
+      (setq org-src-tab-acts-natively t)
       )
 
     (use-package org-bullets
@@ -599,13 +600,11 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     #+end_src
     
     #+begin_src emacs-lisp
-(leaf python-mode
-			  :ensure t
-      :hook (python-mode-hook . lsp-deferred)
-
-		  ;;  :custom (python-shell-interpreter  "python3")
-		    )
-      ;(add-hook 'python-mode-hook #'lsp-deferred)
+      (leaf python-mode
+	:ensure t
+	:hook (python-mode-hook . lsp-deferred)
+	:custom (python-shell-interpreter . "python3")
+	)
     #+end_src
 
 

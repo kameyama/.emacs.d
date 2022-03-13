@@ -255,6 +255,7 @@
   (setq evil-auto-indent nil)
   (setq org-ellipsis " ▾"
 	org-hide-emphasis-markers t)
+  (setq org-src-tab-acts-natively t)
   )
 
 (use-package org-bullets
@@ -369,12 +370,10 @@
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
 (leaf python-mode
-			  :ensure t
-      :hook (python-mode-hook . lsp-deferred)
-
-		  ;;  :custom (python-shell-interpreter  "python3")
-		    )
-      ;(add-hook 'python-mode-hook #'lsp-deferred)
+  :ensure t
+  :hook (python-mode-hook . lsp-deferred)
+  :custom (python-shell-interpreter . "python3")
+  )
 
 ;; (use-package lsp-docker
 ;;   :defer t
