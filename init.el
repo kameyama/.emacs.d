@@ -243,7 +243,7 @@
   :config
   (evil-collection-init))
 
-(use-package lsp-mode
+(leaf lsp-mode
   :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
@@ -286,28 +286,28 @@
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
-(use-package python-mode
-	    :ensure t
-	    :hook (python-mode . lsp-deferred)
-	    :custom
-	    (python-shell-interpreter "python3"))
-
-(use-package lsp-docker
-  :defer t
-  :custom
-  (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
-
-  (setq lsp-docker-client-configs
-	'((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
-	  (:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
-	  (:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
-	  ))
-
-  (lsp-docker-init-clients
-   :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
-   :client-packages lsp-docker-client-packages
-   :client-configs lsp-docker-client-configs)
+(leaf python-mode
+  :ensure t
+  :hook (python-mode-hook . lsp-deferred)
+  :custom (python-shell-interpreter . "python3")
   )
+
+;; (use-package lsp-docker
+;;   :defer t
+;;   :custom
+;;   (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
+
+;;   (setq lsp-docker-client-configs
+;; 	'((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
+;; 	  (:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
+;; 	  (:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
+;; 	  ))
+
+;;   (lsp-docker-init-clients
+;;    :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
+;;    :client-packages lsp-docker-client-packages
+;;    :client-configs lsp-docker-client-configs)
+;;   )
 
 ;; (set-language-environment "UTF-8")
 
@@ -558,7 +558,7 @@
      ("gnu" . "https://elpa.gnu.org/packages/")
      ("elpa" . "https://elpa.gnu.org/packages/")))
  '(package-selected-packages
-   '(org-bullets magit eterm-256color counsel-projectile projectile dockerfile-mode docker terraform-mode csv-mode jupyter markdown-preview-mode sqlformat yaml-mode sbt-mode scala-mode slime go-mode lsp-docker python-mode evil-nerd-commenter lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode evil-collection evil helpful counsel ivy-rich ivy which-key doom-modeline all-the-icons rainbow-delimiters doom-themes general exec-path-from-shell no-littering quelpa transient-dwim use-package leaf-convert leaf-tree blackout el-get hydra leaf-keywords leaf)))
+   '(org-bullets magit eterm-256color counsel-projectile projectile dockerfile-mode docker terraform-mode csv-mode jupyter markdown-preview-mode sqlformat yaml-mode sbt-mode scala-mode slime go-mode python-mode evil-nerd-commenter lsp-ivy lsp-treemacs lsp-ui company-box company evil-collection evil helpful counsel ivy-rich ivy which-key doom-modeline all-the-icons rainbow-delimiters doom-themes general exec-path-from-shell no-littering quelpa transient-dwim use-package leaf-convert leaf-tree blackout el-get hydra leaf-keywords leaf)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

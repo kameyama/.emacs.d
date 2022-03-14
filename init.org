@@ -402,6 +402,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 
 
+
 * Develepment
 
 ** General
@@ -409,7 +410,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 *** Language Server Protcol
 
    #+begin_src emacs-lisp
-     (use-package lsp-mode
+     (leaf lsp-mode
        :commands (lsp lsp-deferred)
        :init
        (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
@@ -486,32 +487,40 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
    
 *** Python
 
+    python-lsp-serverをinstallする必要がある:
+    #+begin_src shell
+      pip install python-lsp-server
+    #+end_src
+    
     #+begin_src emacs-lisp
-      (use-package python-mode
-		  :ensure t
-		  :hook (python-mode . lsp-deferred)
-		  :custom
-		  (python-shell-interpreter "python3"))
+      (leaf python-mode
+	:ensure t
+	:hook (python-mode-hook . lsp-deferred)
+	:custom (python-shell-interpreter . "python3")
+	)
     #+end_src
 
+
+
+    
 *** Python-docker
     #+begin_src emacs-lisp
-      (use-package lsp-docker
-	:defer t
-	:custom
-	(defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
+      ;; (use-package lsp-docker
+      ;;   :defer t
+      ;;   :custom
+      ;;   (defvar lsp-docker-client-packages '(lsp-clients lsp-bash lsp-pyls))
 
-	(setq lsp-docker-client-configs
-	      '((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
-		(:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
-		(:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
-		))
+      ;;   (setq lsp-docker-client-configs
+      ;; 	'((:server-id bash-ls :docker-server-id bashls-docker :server-command "bash-language-server start")
+      ;; 	  (:server-id dockerfile-ls :docker-server-id dockerfilels-docker :server-command "docker-langserver --stdio")
+      ;; 	  (:server-id pyls :docker-server-id pyls-docker :server-command "pyls")
+      ;; 	  ))
 
-	(lsp-docker-init-clients
-	 :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
-	 :client-packages lsp-docker-client-packages
-	 :client-configs lsp-docker-client-configs)
-	)
+      ;;   (lsp-docker-init-clients
+      ;;    :path-mappings '(("path-to-projects-you-want-to-use" . "/projects"))
+      ;;    :client-packages lsp-docker-client-packages
+      ;;    :client-configs lsp-docker-client-configs)
+      ;;   )
 
     #+end_src
 
@@ -691,6 +700,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
       ;;   :defer t)
     #+end_src
 
+
 *** Tex
 
     #+begin_src emacs-lisp
@@ -825,6 +835,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
    
    
    
+
 
 
 
