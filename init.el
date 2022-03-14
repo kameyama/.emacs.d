@@ -54,14 +54,14 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-(leaf auto-package-update
-  :custom
-  (auto-package-update-interval . 7)
-  (auto-package-update-prompt-before-update . t)
-  (auto-package-update-hide-results . t)
-  :config
-  (auto-package-update-maybe)
-  (auto-package-update-at-time "09:00"))
+;; (use-package auto-package-update
+;;   :custom
+;;   (auto-package-update-interval . 7)
+;;   (auto-package-update-prompt-before-update . t)
+;;   (auto-package-update-hide-results . t)
+;;   :config
+;;   (auto-package-update-maybe)
+;;   (auto-package-update-at-time "09:00"))
 
 (leaf exec-path-from-shell
 :ensure t
@@ -238,92 +238,10 @@
 (defalias 'evil-insert-state 'evil-emacs-state)
 
 
-(leaf evil-collection
+(use-package evil-collection
   :after evil
   :config
   (evil-collection-init))
-
-(use-package org
-  ;;  hook (org-mode . dw/org-mode-setup)
-  :config
-  (org-indent-mode)
-  (variable-pitch-mode 1)
-  (auto-fill-mode 0)
-  (visual-line-mode 1)
-
-  (setq org-startup-truncated nil)
-  (setq evil-auto-indent nil)
-  (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t)
-  )
-
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-;; Replace list hyphen with dot
-(font-lock-add-keywords 'org-mode
-			'(("^ *\\([-]\\) "
-			  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-(dolist (face '((org-level-1 . 1.2)
-		(org-level-2 . 1.1)
-		(org-level-3 . 1.05)
-		(org-level-4 . 1.0)
-		(org-level-5 . 1.1)
-		(org-level-6 . 1.1)
-		(org-level-7 . 1.1)
-		(org-level-8 . 1.1)))
-  ;;(set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
-  )
-
-;; Make sure org-indent face is available
-(require 'org-indent)
-
-;; Ensure that anything that should be fixed-pitch in Org files appears that way
-(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
-(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
-
-(with-eval-after-load 'org
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       (shell . t)
-       (lisp . t)
-       (jupyter . t)
-       )
-     )
-(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-    )
-
-(setq org-confirm-babel-evaluate nil)
-
-;; This is needed as of Org 9.2
-(require 'org-tempo)
-
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("py" . "src python"))
-(add-to-list 'org-structure-template-alist '("jl" . "src julia"))
-(add-to-list 'org-structure-template-alist '("cl" . "src lisp"))
-
-;; Automatically tangle our Emacs.org config file when we save it
-(defun efs/org-babel-tangle-config ()
-  (when (string-equal (file-name-directory (buffer-file-name))
-		      (expand-file-name user-emacs-directory))
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
-
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
@@ -546,3 +464,104 @@
   :commands (magit-status magit-get-current-branch)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+(use-package org
+  ;;  hook (org-mode . dw/org-mode-setup)
+  :config
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
+
+  (setq org-startup-truncated nil)
+  (setq evil-auto-indent nil)
+  (setq org-ellipsis " ▾"
+	org-hide-emphasis-markers t)
+  )
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+;; Replace list hyphen with dot
+(font-lock-add-keywords 'org-mode
+			'(("^ *\\([-]\\) "
+			  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+(dolist (face '((org-level-1 . 1.2)
+		(org-level-2 . 1.1)
+		(org-level-3 . 1.05)
+		(org-level-4 . 1.0)
+		(org-level-5 . 1.1)
+		(org-level-6 . 1.1)
+		(org-level-7 . 1.1)
+		(org-level-8 . 1.1)))
+  ;;(set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
+  )
+
+;; Make sure org-indent face is available
+(require 'org-indent)
+
+;; Ensure that anything that should be fixed-pitch in Org files appears that way
+(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+(with-eval-after-load 'org
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (shell . t)
+       (lisp . t)
+       (jupyter . t)
+       )
+     )
+(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+    )
+
+(setq org-confirm-babel-evaluate nil)
+
+;; This is needed as of Org 9.2
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("jl" . "src julia"))
+(add-to-list 'org-structure-template-alist '("cl" . "src lisp"))
+
+;; Automatically tangle our Emacs.org config file when we save it
+(defun efs/org-babel-tangle-config ()
+  (when (string-equal (file-name-directory (buffer-file-name))
+		      (expand-file-name user-emacs-directory))
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-archives
+   '(("org" . "https://orgmode.org/elpa/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("melpa-stable" . "https://stable.melpa.org/packages/")
+     ("gnu" . "https://elpa.gnu.org/packages/")
+     ("elpa" . "https://elpa.gnu.org/packages/")))
+ '(package-selected-packages
+   '(org-bullets magit eterm-256color counsel-projectile projectile dockerfile-mode docker terraform-mode csv-mode jupyter markdown-preview-mode sqlformat yaml-mode sbt-mode scala-mode slime go-mode lsp-docker python-mode evil-nerd-commenter lsp-ivy lsp-treemacs lsp-ui company-box company lsp-mode evil-collection evil helpful counsel ivy-rich ivy which-key doom-modeline all-the-icons rainbow-delimiters doom-themes general exec-path-from-shell no-littering quelpa transient-dwim use-package leaf-convert leaf-tree blackout el-get hydra leaf-keywords leaf)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
