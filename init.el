@@ -70,26 +70,26 @@
 (exec-path-from-shell-initialize))
 
 ;; Thanks, but no thanks
-(setq inhibit-startup-message t)
+    (setq inhibit-startup-message t)
 
-;;(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
-(tooltip-mode -1)           ; Disable tooltips
-(set-fringe-mode 10)       ; Give some breathing room
-(menu-bar-mode -1)            ; Disable the menu bar
+    ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
+    (tool-bar-mode -1)          ; Disable the toolbar
+    (tooltip-mode -1)           ; Disable tooltips
+;;    (set-fringe-mode 10)       ; Give some breathing room
+    (menu-bar-mode -1)            ; Disable the menu bar
 
-;; Set up the visible bell
-(setq visible-bell t)
+    ;; Set up the visible bell
+    (setq visible-bell t)
 
-;; show line numb
-(column-number-mode)
-(global-display-line-numbers-mode t)
+    ;; show line numb
+    (column-number-mode)
+    (global-display-line-numbers-mode t)
 
-;; Override some modes which derive from the above
-(dolist (mode '(org-mode-hook
-		shell-mode-hook
-		eshell-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+    ;; Override some modes which derive from the above
+    (dolist (mode '(org-mode-hook
+		    shell-mode-hook
+		    eshell-mode-hook))
+      (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;ESC Cancels All
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -546,22 +546,3 @@
       (org-babel-tangle))))
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-archives
-   '(("org" . "https://orgmode.org/elpa/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("melpa-stable" . "https://stable.melpa.org/packages/")
-     ("gnu" . "https://elpa.gnu.org/packages/")
-     ("elpa" . "https://elpa.gnu.org/packages/")))
- '(package-selected-packages
-   '(org-bullets magit eterm-256color counsel-projectile projectile dockerfile-mode docker terraform-mode csv-mode jupyter markdown-preview-mode sqlformat yaml-mode sbt-mode scala-mode slime go-mode python-mode evil-nerd-commenter lsp-ivy lsp-treemacs lsp-ui company-box company evil-collection evil helpful counsel ivy-rich ivy which-key doom-modeline all-the-icons rainbow-delimiters doom-themes general exec-path-from-shell no-littering quelpa transient-dwim use-package leaf-convert leaf-tree blackout el-get hydra leaf-keywords leaf)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
