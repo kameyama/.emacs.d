@@ -23,6 +23,7 @@
     (leaf hydra :ensure t)
     (leaf el-get :ensure t)
     (leaf blackout :ensure t)
+    (leaf diminish :ensure t)
 
     :config
     ;; initialize leaf-keywords.el
@@ -103,6 +104,22 @@
     '(normal insert visual emacs)
     :prefix "SPC" :global-prefix "C-SPC"))
 
+(leaf dashboard
+   :ensure t
+   :config (dashboard-setup-startup-hook)
+     )
+
+(leaf helpful
+  :custom
+  (counsel-describe-function-function . #'helpful-callable)
+  (counsel-describe-variable-function . #'helpful-variable)
+  :bind
+  ([remap describe-function] . helpful-function)
+  ([remap describe-symbol] . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-key] . helpful-key))
+
 (leaf doom-themes
   :ensure t
   :require t
@@ -152,6 +169,8 @@
   (ivy-rich-mode 1)
   )
 
+;(leaf ivy)
+
 (use-package counsel
 :init
 (setq-default dired-omit-files-p t)
@@ -177,17 +196,6 @@
   ;;   "h" 'dired-up-directory
   ;;   "l" 'dired-find-file)
   )
-
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . helpful-function)
-  ([remap describe-symbol] . helpful-symbol)
-  ([remap describe-variable] . helpful-variable)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-key] . helpful-key))
 
 (use-package hydra)
 

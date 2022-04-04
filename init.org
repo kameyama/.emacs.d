@@ -6,7 +6,9 @@
 
 
 emacsのinit.elをorg-modeを使って管理する. saveすると自動的にemacs-lisp code block内のコードがinit.elにinit.elが生成される.
-
+** reference
+   - [[https://github.com/daviwil/emacs-from-scratch][system crafter]]
+   - [[https://github.com/emacs-tw/awesome-emacs][awesome emacs]]
 
 
 
@@ -18,53 +20,58 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 * Packege System
   
    
-** [[https://github.com/conao3/leaf.el][leaf]]
-   use-packageの代替パッケージを使って記述する. (use-packageから移行中)
+** leaf
+   [[https://github.com/conao3/leaf.el][leaf]] is yet another use-package. (use-packageから移行中)
    
    #+begin_src emacs-lisp
-	  ;; init.el is created from emacs.org which emacs settings.
-	  ;; Do NOT modify this file.
+     ;; init.el is created from emacs.org which emacs settings.
+     ;; Do NOT modify this file.
 
-	  ;; Initialize package sources
+     ;; Initialize package sources
 
-	  (eval-and-compile
-	    (customize-set-variable
-	     'package-archives '(("org" . "https://orgmode.org/elpa/")
-				 ("melpa" . "https://melpa.org/packages/")
-				 ("melpa-stable" . "https://stable.melpa.org/packages/")
-				 ("gnu" . "https://elpa.gnu.org/packages/")
-				 ("elpa" . "https://elpa.gnu.org/packages/")
-				 ))
-	    (package-initialize)
-	    (unless (package-installed-p 'leaf)
-	      (package-refresh-contents)
-	      (package-install 'leaf))
+     (eval-and-compile
+       (customize-set-variable
+	'package-archives '(("org" . "https://orgmode.org/elpa/")
+			    ("melpa" . "https://melpa.org/packages/")
+			    ("melpa-stable" . "https://stable.melpa.org/packages/")
+			    ("gnu" . "https://elpa.gnu.org/packages/")
+			    ("elpa" . "https://elpa.gnu.org/packages/")
+			    ))
+       (package-initialize)
+       (unless (package-installed-p 'leaf)
+	 (package-refresh-contents)
+	 (package-install 'leaf))
 
-	    (leaf leaf-keywords
-	      :ensure t
-	      :init
-	      ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-	      (leaf hydra :ensure t)
-	      (leaf el-get :ensure t)
-	      (leaf blackout :ensure t)
+       (leaf leaf-keywords
+	 :ensure t
+	 :init
+	 ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
+	 (leaf hydra :ensure t)
+	 (leaf el-get :ensure t)
+	 (leaf blackout :ensure t)
+	 (leaf diminish :ensure t)
 
-	      :config
-	      ;; initialize leaf-keywords.el
-	      (leaf-keywords-init)))
+	 :config
+	 ;; initialize leaf-keywords.el
+	 (leaf-keywords-init)))
 
-	  (leaf leaf-tree :ensure t)
-	  (leaf leaf-convert :ensure t
-	    :config (leaf use-package :ensure t))
-	  (leaf transient-dwim
-	    :ensure t
-	    :bind (("M-=" . transient-dwim-dispatch)))
+     (leaf leaf-tree :ensure t)
+     (leaf leaf-convert :ensure t
+       :config (leaf use-package :ensure t))
+     (leaf transient-dwim
+       :ensure t
+       :bind (("M-=" . transient-dwim-dispatch)))
 
    #+end_src
 
-   
-** [[https://github.com/jwiegley/use-package][use-packege]]
 
-    パッケージの使用を可読性高く書くことができるマクロ.
+   
+*** usage
+    :custom keywordでは"."が必要.
+   
+** use-package
+
+   [[https://github.com/jwiegley/use-package][use-packege]] is a macro that allows you to isolate package configuration in your .emacs file in a way that is both performance-oriented and, well, tidy.
     
   #+begin_src emacs-lisp
 
@@ -120,7 +127,6 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     (setq auto-save-file-name-transforms
 	  `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
   #+end_src
-
   
 ** Package Updates
 
@@ -195,7 +201,37 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
    #+end_src
 
 
-  
+
+
+   
+** Interface Enhancements
+   
+*** Dashboard
+    [[https://github.com/emacs-dashboard/emacs-dashboard][dashbord]]
+   #+begin_src emacs-lisp
+     (leaf dashboard
+	:ensure t
+	:config (dashboard-setup-startup-hook)
+	  )
+   #+end_src
+*** Helpful
+    [[https://github.com/Wilfred/helpful][Helpful]] is an alternative to the built-in Emacs help that provides much more contextual information.
+   #+begin_src emacs-lisp
+     (leaf helpful
+       :custom
+       (counsel-describe-function-function . #'helpful-callable)
+       (counsel-describe-variable-function . #'helpful-variable)
+       :bind
+       ([remap describe-function] . helpful-function)
+       ([remap describe-symbol] . helpful-symbol)
+       ([remap describe-variable] . helpful-variable)
+       ([remap describe-command] . helpful-command)
+       ([remap describe-key] . helpful-key))
+   #+end_src
+
+
+
+    
 ** Theme
    
   #+begin_src emacs-lisp
@@ -227,7 +263,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 
 
-** Which Kye
+** Which Key
    
    #+begin_src emacs-lisp
      (use-package which-key
@@ -267,6 +303,10 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
        )
    #+end_src
 
+   #+begin_src emacs-lisp
+;(leaf ivy)
+   #+end_src
+
 ** Counsel
    #+begin_src emacs-lisp
 
@@ -304,23 +344,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
    #+end_src
    
-** Helpful
 
-   #+begin_src emacs-lisp
-
-     (use-package helpful
-       :custom
-       (counsel-describe-function-function #'helpful-callable)
-       (counsel-describe-variable-function #'helpful-variable)
-       :bind
-       ([remap describe-function] . helpful-function)
-       ([remap describe-symbol] . helpful-symbol)
-       ([remap describe-variable] . helpful-variable)
-       ([remap describe-command] . helpful-command)
-       ([remap describe-key] . helpful-key))
-
-
-   #+end_src
 
 ** Text Scalling
 
