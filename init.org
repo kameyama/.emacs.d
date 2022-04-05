@@ -65,10 +65,21 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
    #+end_src
 
 
+   #+begin_src emacs-lisp
+     (leaf cus-edit
+       :doc "tools for customizing Emacs and Lisp packages"
+       :tag "builtin" "faces" "help"
+       :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
+   #+end_src
+
    
-*** usage
+*** memo 
+    - use-packageからの移行
+
+    :bind中での:mapは(:map xxx-mode-map ...)を(:xxx-mode-map ...)にする.
+    [[https://qiita.com/conao3/items/347d7e472afd0c58fbd7#%E5%A4%89%E6%95%B0%E3%81%AE%E5%A4%89%E6%9B%B4%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6][packageの変数の変更でsetqは非推奨]]. leafでは:setqではなく:customを使う. 
     :custom keywordでは"."が必要.
-   
+    
 ** use-package
 
    [[https://github.com/jwiegley/use-package][use-packege]] is a macro that allows you to isolate package configuration in your .emacs file in a way that is both performance-oriented and, well, tidy.
@@ -276,32 +287,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 ** Ivy
 
-   #+begin_src emacs-lisp
-
-     ;; (use-package ivy
-     ;;   :diminish
-     ;;   :bind (("C-s" . swiper)
-     ;; 	 :map ivy-minibuffer-map
-     ;; 	 ("TAB" . ivy-alt-done)
-     ;; 	 ("C-f" . ivy-alt-done)
-     ;; 	 ("C-l" . ivy-alt-done)
-     ;; 	 ("C-j" . ivy-next-line)
-     ;; 	 ("C-k" . ivy-previous-line)
-     ;; 	 :map ivy-switch-buffer-map
-     ;; 	 ("C-k" . ivy-previous-line)
-     ;; 	 ("C-l" . ivy-done)
-     ;; 	 ("C-d" . ivy-switch-buffer-kill)
-     ;; 	 :map ivy-reverse-i-search-map
-     ;; 	 ("C-k" . ivy-previous-line)
-     ;; 	 ("C-d" . ivy-reverse-i-search-kill))
-     ;;   :config
-     ;;   (ivy-mode t))
-
-     ;; (use-package ivy-rich
-     ;;   :init
-     ;;   (ivy-rich-mode 1)
-     ;;   )
-   #+end_src
+   Ivy is a generic completion mechanism for Emacs.
 
    #+begin_src emacs-lisp
 
@@ -338,11 +324,11 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 
 
-
 ** Counsel
+   Counsel provids versions of common Emacs commands that are customised to make the best use of Ivy.
    #+begin_src emacs-lisp
 
-     (use-package counsel
+     (leaf counsel
      :init
      (setq-default dired-omit-files-p t)
      (setq dired-omit-files "^\\.DS_Store")
@@ -354,10 +340,12 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
      ("C-x C-f" . counsel-find-file)
      ;; ("C-M-j" . counsel-switch-buffer)
      ("C-M-l" . counsel-imenu)
-     :map minibuffer-local-map
-     ("C-r" . 'counsel-minibuffer-history))
+     (:minibuffer-local-map
+     ("C-r" . 'counsel-minibuffer-history)))
      )
    #+end_src
+
+
 
 
   
@@ -924,7 +912,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
 			    '(("^ *\\([-]\\) "
-			      (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     (dolist (face '((org-level-1 . 1.2)
 		    (org-level-2 . 1.1)
@@ -951,6 +939,19 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
   #+end_src
 
+
+** format
+   #+begin_src emacs-lisp
+     (defun indent-org-block-automatically ()
+       (interactive)
+       (when (org-in-src-block-p)
+	 (org-edit-special)
+	 (indent-region (point-min) (point-max))
+	 (org-edit-src-exit)))
+
+   #+end_src
+
+ 
 ** Org Babel
    
 *** Babel Languages
