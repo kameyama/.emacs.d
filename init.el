@@ -60,14 +60,15 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-;; (use-package auto-package-update
-;;   :custom
-;;   (auto-package-update-interval . 7)
-;;   (auto-package-update-prompt-before-update . t)
-;;   (auto-package-update-hide-results . t)
-;;   :config
-;;   (auto-package-update-maybe)
-;;   (auto-package-update-at-time "09:00"))
+(leaf auto-package-update
+  :custom
+  (auto-package-update-interval . 7)
+  (auto-package-update-prompt-before-update . t)
+  (auto-package-update-hide-results . t)
+  ;; :config
+  ;; (auto-package-update-maybe)
+  ;; (auto-package-update-at-time "09:00")
+  )
 
 (leaf exec-path-from-shell
 :ensure t
@@ -75,27 +76,62 @@
 :config
 (exec-path-from-shell-initialize))
 
-;; Thanks, but no thanks
-    (setq inhibit-startup-message t)
+(leaf cus-start
+  :doc "define customization properties of builtins"
+  :tag "builtin" "internal"
+  :preface
+  (defun c/redraw-frame nil
+    (interactive)
+    (redraw-frame))
 
-    ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
-    (tool-bar-mode -1)          ; Disable the toolbar
-    (tooltip-mode -1)           ; Disable tooltips
-;;    (set-fringe-mode 10)       ; Give some breathing room
-    (menu-bar-mode -1)            ; Disable the menu bar
+  :bind (("M-ESC ESC" . c/redraw-frame))
+  :custom '((user-full-name . "Masaya Kameyama")
+            (user-mail-address . "kamesen038@gmail.com")
+;;            (user-login-name . "conao3")
+            (create-lockfiles . nil)
+            (debug-on-error . t)
+            (init-file-debug . t)
+            (frame-resize-pixelwise . t)
+            (enable-recursive-minibuffers . t)
+            (history-length . 1000)
+            (history-delete-duplicates . t)
+            (scroll-preserve-screen-position . t)
+            (scroll-conservatively . 100)
+            (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
+            (ring-bell-function . 'ignore)
+            (text-quoting-style . 'straight)
+            (truncate-lines . t)
+            ;; (use-dialog-box . nil)
+            ;; (use-file-dialog . nil)
+            (menu-bar-mode . nil)
+            (tool-bar-mode . nil)
+            (scroll-bar-mode . t)
+            (indent-tabs-mode . nil))
+  :config
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (keyboard-translate ?\C-h ?\C-?))
 
-    ;; Set up the visible bell
-    (setq visible-bell t)
+;;     ;; Thanks, but no thanks
+;;     (setq inhibit-startup-message t)
 
-    ;; show line numb
-    (column-number-mode)
-    (global-display-line-numbers-mode t)
+;;     ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
+;;     (tool-bar-mode -1)          ; Disable the toolbar
+;;     (tooltip-mode -1)           ; Disable tooltips
+;; ;;    (set-fringe-mode 10)       ; Give some breathing room
+;;     (menu-bar-mode -1)            ; Disable the menu bar
 
-    ;; Override some modes which derive from the above
-    (dolist (mode '(org-mode-hook
-		    shell-mode-hook
-		    eshell-mode-hook))
-      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;;     ;; Set up the visible bell
+;;     (setq visible-bell t)
+
+;;     ;; show line numb
+;;     (column-number-mode)
+;;     (global-display-line-numbers-mode t)
+
+;;     ;; Override some modes which derive from the above
+;;     (dolist (mode '(org-mode-hook
+;; 		    shell-mode-hook
+;; 		    eshell-mode-hook))
+;;       (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;ESC Cancels All
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -391,8 +427,7 @@
 
 (use-package markdown-preview-mode)
 
-(use-package jupyter
-  :defer t)
+(leaf jupyter)
 
 (use-package csv-mode
   :defer t)
@@ -537,19 +572,19 @@
     (org-edit-src-exit)))
 
 (with-eval-after-load 'org
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       (shell . t)
-       (lisp . t)
-       (jupyter . t)
-       )
-     )
-(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-    )
+	    (org-babel-do-load-languages
+	     'org-babel-load-languages
+	     '((emacs-lisp . t)
+	       (python . t)
+	       (shell . t)
+	       (lisp . t)
+;	       (jupyter . t)
+	       )
+	     )
+	(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+	    )
 
-(setq org-confirm-babel-evaluate nil)
+	(setq org-confirm-babel-evaluate nil)
 
 ;; This is needed as of Org 9.2
 (require 'org-tempo)
