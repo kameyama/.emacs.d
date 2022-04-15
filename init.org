@@ -684,7 +684,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 *** Markdown
     #+begin_src emacs-lisp
-      (use-package markdown-mode
+      (leaf markdown-mode
 	:ensure t
 	:commands (markdown-mode gfm-mode)
 	:mode (("README\\.md\\'" . gfm-mode)
@@ -692,8 +692,13 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 	       ("\\.markdown\\'" . markdown-mode))
 	:init (setq markdown-command "multimarkdown"))
 
-      (use-package markdown-preview-mode)
+      (leaf markdown-preview-mode)
+      (leaf maekdownfmt)
     #+end_src
+
+
+
+
 
 
     

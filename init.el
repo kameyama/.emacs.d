@@ -373,7 +373,7 @@
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
 
-(use-package markdown-mode
+(leaf markdown-mode
   :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
@@ -381,7 +381,8 @@
 	 ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
-(use-package markdown-preview-mode)
+(leaf markdown-preview-mode)
+(leaf maekdownfmt)
 
 (use-package jupyter
   :defer t)
