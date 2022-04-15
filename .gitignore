@@ -1,22 +1,21 @@
 /auto-save-list/*
 /data/*
 /elpa/*
+eln-cache/
 /quelpa/*
 /etc/*
-/transient/*
 /var/*
+!/var/bookmark-default.el
+
 
 /.last-package-update-day
 /.lsp-session-v1
 /.org-id-locations
 
 
-eln-cache/
-eshell/history
-eshell/lastdir
 
 
-/projectile-bookmarks.eld
+
 
 
 

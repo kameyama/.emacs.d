@@ -36,6 +36,11 @@
   :ensure t
   :bind (("M-=" . transient-dwim-dispatch)))
 
+(leaf cus-edit
+  :doc "tools for customizing Emacs and Lisp packages"
+  :tag "builtin" "faces" "help"
+  :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
+
 (eval-when-compile
     (require 'use-package))
 
@@ -55,14 +60,15 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-;; (use-package auto-package-update
-;;   :custom
-;;   (auto-package-update-interval . 7)
-;;   (auto-package-update-prompt-before-update . t)
-;;   (auto-package-update-hide-results . t)
-;;   :config
-;;   (auto-package-update-maybe)
-;;   (auto-package-update-at-time "09:00"))
+(leaf auto-package-update
+  :custom
+  (auto-package-update-interval . 7)
+  (auto-package-update-prompt-before-update . t)
+  (auto-package-update-hide-results . t)
+  ;; :config
+  ;; (auto-package-update-maybe)
+  ;; (auto-package-update-at-time "09:00")
+  )
 
 (leaf exec-path-from-shell
 :ensure t
@@ -70,27 +76,62 @@
 :config
 (exec-path-from-shell-initialize))
 
-;; Thanks, but no thanks
-    (setq inhibit-startup-message t)
+(leaf cus-start
+  :doc "define customization properties of builtins"
+  :tag "builtin" "internal"
+  :preface
+  (defun c/redraw-frame nil
+    (interactive)
+    (redraw-frame))
 
-    ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
-    (tool-bar-mode -1)          ; Disable the toolbar
-    (tooltip-mode -1)           ; Disable tooltips
-;;    (set-fringe-mode 10)       ; Give some breathing room
-    (menu-bar-mode -1)            ; Disable the menu bar
+  :bind (("M-ESC ESC" . c/redraw-frame))
+  :custom '((user-full-name . "Masaya Kameyama")
+            (user-mail-address . "kamesen038@gmail.com")
+;;            (user-login-name . "conao3")
+            (create-lockfiles . nil)
+            (debug-on-error . t)
+            (init-file-debug . t)
+            (frame-resize-pixelwise . t)
+            (enable-recursive-minibuffers . t)
+            (history-length . 1000)
+            (history-delete-duplicates . t)
+            (scroll-preserve-screen-position . t)
+            (scroll-conservatively . 100)
+            (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
+            (ring-bell-function . 'ignore)
+            (text-quoting-style . 'straight)
+            (truncate-lines . t)
+            ;; (use-dialog-box . nil)
+            ;; (use-file-dialog . nil)
+            (menu-bar-mode . nil)
+            (tool-bar-mode . nil)
+            (scroll-bar-mode . t)
+            (indent-tabs-mode . nil))
+  :config
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (keyboard-translate ?\C-h ?\C-?))
 
-    ;; Set up the visible bell
-    (setq visible-bell t)
+;;     ;; Thanks, but no thanks
+;;     (setq inhibit-startup-message t)
 
-    ;; show line numb
-    (column-number-mode)
-    (global-display-line-numbers-mode t)
+;;     ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
+;;     (tool-bar-mode -1)          ; Disable the toolbar
+;;     (tooltip-mode -1)           ; Disable tooltips
+;; ;;    (set-fringe-mode 10)       ; Give some breathing room
+;;     (menu-bar-mode -1)            ; Disable the menu bar
 
-    ;; Override some modes which derive from the above
-    (dolist (mode '(org-mode-hook
-		    shell-mode-hook
-		    eshell-mode-hook))
-      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+;;     ;; Set up the visible bell
+;;     (setq visible-bell t)
+
+;;     ;; show line numb
+;;     (column-number-mode)
+;;     (global-display-line-numbers-mode t)
+
+;;     ;; Override some modes which derive from the above
+;;     (dolist (mode '(org-mode-hook
+;; 		    shell-mode-hook
+;; 		    eshell-mode-hook))
+;;       (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;ESC Cancels All
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -145,33 +186,36 @@
   :config
   (setq which-key-idle-delay 0.3))
 
-(use-package ivy
+(leaf ivy
   :diminish
   :bind (("C-s" . swiper)
-	 :map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 ("C-f" . ivy-alt-done)
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-l" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode t))
 
-(use-package ivy-rich
+	 (:ivy-minibuffer-map
+	  ("TAB" . ivy-alt-done)
+	  ("C-f" . ivy-alt-done)
+	  ("C-l" . ivy-alt-done)
+	  ("C-j" . ivy-next-line)
+	  ("C-k" . ivy-previous-line))
+
+	 (:ivy-switch-buffer-map
+	  ("C-k" . ivy-previous-line)
+	  ("C-l" . ivy-done)
+	  ("C-d" . ivy-switch-buffer-kill))
+
+	 (:ivy-reverse-i-search-map
+	  ("C-k" . ivy-previous-line)
+	  ("C-d" . ivy-reverse-i-search-kill))
+	 )
+  :config
+  (ivy-mode t)
+  )
+
+(leaf ivy-rich
   :init
   (ivy-rich-mode 1)
   )
 
-;(leaf ivy)
-
-(use-package counsel
+(leaf counsel
 :init
 (setq-default dired-omit-files-p t)
 (setq dired-omit-files "^\\.DS_Store")
@@ -183,8 +227,8 @@
 ("C-x C-f" . counsel-find-file)
 ;; ("C-M-j" . counsel-switch-buffer)
 ("C-M-l" . counsel-imenu)
-:map minibuffer-local-map
-("C-r" . 'counsel-minibuffer-history))
+(:minibuffer-local-map
+("C-r" . 'counsel-minibuffer-history)))
 )
 
 (use-package dired			
@@ -384,8 +428,7 @@
 (leaf markdown-preview-mode)
 (leaf maekdownfmt)
 
-(use-package jupyter
-  :defer t)
+(leaf jupyter)
 
 (use-package csv-mode
   :defer t)
@@ -497,7 +540,7 @@
 ;; Replace list hyphen with dot
 (font-lock-add-keywords 'org-mode
 			'(("^ *\\([-]\\) "
-			  (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 (dolist (face '((org-level-1 . 1.2)
 		(org-level-2 . 1.1)
@@ -522,20 +565,27 @@
 (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
-(with-eval-after-load 'org
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       (shell . t)
-       (lisp . t)
-       (jupyter . t)
-       )
-     )
-(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-    )
+(defun indent-org-block-automatically ()
+  (interactive)
+  (when (org-in-src-block-p)
+    (org-edit-special)
+    (indent-region (point-min) (point-max))
+    (org-edit-src-exit)))
 
-(setq org-confirm-babel-evaluate nil)
+(with-eval-after-load 'org
+	    (org-babel-do-load-languages
+	     'org-babel-load-languages
+	     '((emacs-lisp . t)
+	       (python . t)
+	       (shell . t)
+	       (lisp . t)
+;	       (jupyter . t)
+	       )
+	     )
+	(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+	    )
+
+	(setq org-confirm-babel-evaluate nil)
 
 ;; This is needed as of Org 9.2
 (require 'org-tempo)
