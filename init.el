@@ -87,7 +87,7 @@
   :bind (("M-ESC ESC" . c/redraw-frame))
   :custom '((user-full-name . "Masaya Kameyama")
             (user-mail-address . "kamesen038@gmail.com")
-;;            (user-login-name . "conao3")
+;;            (user-login-name . "masaya")
             (create-lockfiles . nil)
             (debug-on-error . t)
             (init-file-debug . t)
@@ -111,27 +111,24 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
   (keyboard-translate ?\C-h ?\C-?))
 
-;;     ;; Thanks, but no thanks
-;;     (setq inhibit-startup-message t)
+;; Thanks, but no thanks
+    (setq inhibit-startup-message t)
 
-;;     ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
-;;     (tool-bar-mode -1)          ; Disable the toolbar
-;;     (tooltip-mode -1)           ; Disable tooltips
-;; ;;    (set-fringe-mode 10)       ; Give some breathing room
-;;     (menu-bar-mode -1)            ; Disable the menu bar
+    (tooltip-mode -1)           ; Disable tooltips
+;;    (set-fringe-mode 10)       ; Give some breathing room
 
-;;     ;; Set up the visible bell
-;;     (setq visible-bell t)
+    ;; Set up the visible bell
+    (setq visible-bell t)
 
-;;     ;; show line numb
-;;     (column-number-mode)
-;;     (global-display-line-numbers-mode t)
+    ;; show line number
+    (column-number-mode)
+    (global-display-line-numbers-mode t)
 
-;;     ;; Override some modes which derive from the above
-;;     (dolist (mode '(org-mode-hook
-;; 		    shell-mode-hook
-;; 		    eshell-mode-hook))
-;;       (add-hook mode (lambda () (display-line-numbers-mode 0))))
+    ;; Override some modes which derive from the above
+    (dolist (mode '(org-mode-hook
+                    shell-mode-hook
+                    eshell-mode-hook))
+      (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;;ESC Cancels All
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
@@ -151,15 +148,17 @@
      )
 
 (leaf helpful
-  :custom
-  (counsel-describe-function-function . #'helpful-callable)
-  (counsel-describe-variable-function . #'helpful-variable)
-  :bind
-  ([remap describe-function] . helpful-function)
-  ([remap describe-symbol] . helpful-symbol)
-  ([remap describe-variable] . helpful-variable)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-key] . helpful-key))
+       :custom
+     (
+       (counsel-describe-function-function . #'helpful-callable)
+       (counsel-describe-variable-function . #'helpful-variable))
+       :bind (
+       ([remap describe-function] . helpful-function)
+       ([remap describe-symbol] . helpful-symbol)
+       ([remap describe-variable] . helpful-variable)
+       ([remap describe-command] . helpful-command)
+       ([remap describe-key] . helpful-key))
+)
 
 (leaf doom-themes
   :ensure t
@@ -252,8 +251,12 @@
 ;; (rune/leader-keys
 ;;   "ts" '(hydra-text-scale/body :which-key "scale text"))
 
+(set-language-environment "Japanese")
 ;; font setting
 ;;(set-face-attribute 'default nil :font "Fira Mono" :height 280)
+(set-face-attribute 'default nil
+                :family "Hack Nerd Font Mono"
+                :height 200)
 ;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :wigth 'regular)
 (set-face-attribute 'default nil :height 150)
 
@@ -417,7 +420,7 @@
 (setq sqlformat-command 'pgformatter)
 (setq sqlformat-args '("-s2" "-g"))
 
-(use-package markdown-mode
+(leaf markdown-mode
   :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
@@ -425,7 +428,8 @@
 	 ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
-(use-package markdown-preview-mode)
+(leaf markdown-preview-mode)
+(leaf maekdownfmt)
 
 (leaf jupyter)
 
@@ -515,6 +519,23 @@
   :commands (magit-status magit-get-current-branch)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;;   (leaf asdf
+ ;;     :load-path "~/.emacs.d/emacs-lisp/asdf.el/"
+
+ ;; )
+
+;; (add-to-list 'load-path "~/.emacs.d/emacs-lisp/asdf.el/")
+;; (require 'asdf)
+
+;; (asdf-enable)
+
+;;   (leaf envrc
+;; :config (envrc-global-mode))
+
+(use-package direnv
+ :config
+ (direnv-mode))
 
 (use-package org
   ;;  hook (org-mode . dw/org-mode-setup)
