@@ -176,6 +176,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
   
 ** UI
 
+ Cで書かれた部分のパラメータはcus-startで設定する. C-h, vで説明を見ることができる.
 #+begin_src emacs-lisp
 (leaf cus-start
   :doc "define customization properties of builtins"
@@ -188,7 +189,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
   :bind (("M-ESC ESC" . c/redraw-frame))
   :custom '((user-full-name . "Masaya Kameyama")
             (user-mail-address . "kamesen038@gmail.com")
-;;            (user-login-name . "conao3")
+;;            (user-login-name . "masaya")
             (create-lockfiles . nil)
             (debug-on-error . t)
             (init-file-debug . t)
@@ -217,27 +218,24 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
 
   #+begin_src emacs-lisp
-    ;;     ;; Thanks, but no thanks
-    ;;     (setq inhibit-startup-message t)
+        ;; Thanks, but no thanks
+        (setq inhibit-startup-message t)
 
-    ;;     ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
-    ;;     (tool-bar-mode -1)          ; Disable the toolbar
-    ;;     (tooltip-mode -1)           ; Disable tooltips
-    ;; ;;    (set-fringe-mode 10)       ; Give some breathing room
-    ;;     (menu-bar-mode -1)            ; Disable the menu bar
+        (tooltip-mode -1)           ; Disable tooltips
+    ;;    (set-fringe-mode 10)       ; Give some breathing room
 
-    ;;     ;; Set up the visible bell
-    ;;     (setq visible-bell t)
+        ;; Set up the visible bell
+        (setq visible-bell t)
 
-    ;;     ;; show line numb
-    ;;     (column-number-mode)
-    ;;     (global-display-line-numbers-mode t)
+        ;; show line number
+        (column-number-mode)
+        (global-display-line-numbers-mode t)
 
-    ;;     ;; Override some modes which derive from the above
-    ;;     (dolist (mode '(org-mode-hook
-    ;; 		    shell-mode-hook
-    ;; 		    eshell-mode-hook))
-    ;;       (add-hook mode (lambda () (display-line-numbers-mode 0))))
+        ;; Override some modes which derive from the above
+        (dolist (mode '(org-mode-hook
+                        shell-mode-hook
+                        eshell-mode-hook))
+          (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
   #+end_src
 
@@ -275,17 +273,30 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 *** Helpful
     [[https://github.com/Wilfred/helpful][Helpful]] is an alternative to the built-in Emacs help that provides much more contextual information.
    #+begin_src emacs-lisp
-     (leaf helpful
-       :custom
-       (counsel-describe-function-function . #'helpful-callable)
-       (counsel-describe-variable-function . #'helpful-variable)
-       :bind
-       ([remap describe-function] . helpful-function)
-       ([remap describe-symbol] . helpful-symbol)
-       ([remap describe-variable] . helpful-variable)
-       ([remap describe-command] . helpful-command)
-       ([remap describe-key] . helpful-key))
+          (leaf helpful
+            :custom
+          (
+            (counsel-describe-function-function . #'helpful-callable)
+            (counsel-describe-variable-function . #'helpful-variable))
+            :bind (
+            ([remap describe-function] . helpful-function)
+            ([remap describe-symbol] . helpful-symbol)
+            ([remap describe-variable] . helpful-variable)
+            ([remap describe-command] . helpful-command)
+            ([remap describe-key] . helpful-key))
+     )
    #+end_src
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -432,12 +443,21 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 ** Font
    
   #+begin_src emacs-lisp
-
+    (set-language-environment "Japanese")
     ;; font setting
     ;;(set-face-attribute 'default nil :font "Fira Mono" :height 280)
+    (set-face-attribute 'default nil
+                    :family "Hack Nerd Font Mono"
+                    :height 200)
     ;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :wigth 'regular)
     (set-face-attribute 'default nil :height 150)
    #+end_src
+
+   #+RESULTS:
+
+
+
+
 
 ** Evil
 
@@ -933,6 +953,48 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
    
    
 
+
+
+** asdf
+#+begin_src emacs-lisp
+     ;;   (leaf asdf
+   ;;     :load-path "~/.emacs.d/emacs-lisp/asdf.el/"
+
+   ;; )
+
+  ;; (add-to-list 'load-path "~/.emacs.d/emacs-lisp/asdf.el/")
+  ;; (require 'asdf)
+
+  ;; (asdf-enable)
+#+end_src
+
+
+
+
+
+
+
+
+** envrc
+
+#+begin_src emacs-lisp
+  ;;   (leaf envrc
+  ;; :config (envrc-global-mode))
+
+
+#+end_src
+
+
+
+
+
+** emacs-direnv
+
+#+begin_src emacs-lisp
+(use-package direnv
+ :config
+ (direnv-mode))
+#+end_src
 
 
 
