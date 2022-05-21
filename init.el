@@ -60,14 +60,15 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-(leaf auto-package-update
+(use-package auto-package-update
+
   :custom
-  (auto-package-update-interval . 7)
-  (auto-package-update-prompt-before-update . t)
-  (auto-package-update-hide-results . t)
+  (auto-package-update-interval  7)
+  (auto-package-update-prompt-before-update  t)
+  (auto-package-update-hide-results  t)
   ;; :config
-  ;; (auto-package-update-maybe)
-  ;; (auto-package-update-at-time "09:00")
+  (auto-package-update-maybe)
+  (auto-package-update-at-time "09:00")
   )
 
 (leaf exec-path-from-shell
@@ -431,7 +432,9 @@
 (leaf markdown-preview-mode)
 (leaf maekdownfmt)
 
-(leaf jupyter)
+(leaf jupyter
+  :ensure t
+  :after org)
 
 (use-package csv-mode
   :defer t)
@@ -520,19 +523,6 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-;;   (leaf asdf
- ;;     :load-path "~/.emacs.d/emacs-lisp/asdf.el/"
-
- ;; )
-
-;; (add-to-list 'load-path "~/.emacs.d/emacs-lisp/asdf.el/")
-;; (require 'asdf)
-
-;; (asdf-enable)
-
-;;   (leaf envrc
-;; :config (envrc-global-mode))
-
 (use-package direnv
  :config
  (direnv-mode))
@@ -545,10 +535,11 @@
   (auto-fill-mode 0)
   (visual-line-mode 1)
 
+  (setq org-startup-with-inline-images t)
   (setq org-startup-truncated nil)
   (setq evil-auto-indent nil)
   (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t)
+        org-hide-emphasis-markers t)
   )
 
 (use-package org-bullets
@@ -559,17 +550,17 @@
 
 ;; Replace list hyphen with dot
 (font-lock-add-keywords 'org-mode
-			'(("^ *\\([-]\\) "
-			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 (dolist (face '((org-level-1 . 1.2)
-		(org-level-2 . 1.1)
-		(org-level-3 . 1.05)
-		(org-level-4 . 1.0)
-		(org-level-5 . 1.1)
-		(org-level-6 . 1.1)
-		(org-level-7 . 1.1)
-		(org-level-8 . 1.1)))
+                (org-level-2 . 1.1)
+                (org-level-3 . 1.05)
+                (org-level-4 . 1.0)
+                (org-level-5 . 1.1)
+                (org-level-6 . 1.1)
+                (org-level-7 . 1.1)
+                (org-level-8 . 1.1)))
   ;;(set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
   )
 
@@ -593,19 +584,19 @@
     (org-edit-src-exit)))
 
 (with-eval-after-load 'org
-	    (org-babel-do-load-languages
-	     'org-babel-load-languages
-	     '((emacs-lisp . t)
-	       (python . t)
-	       (shell . t)
-	       (lisp . t)
-;	       (jupyter . t)
-	       )
-	     )
-	(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-	    )
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (shell . t)
+       (lisp . t)
+       (jupyter . t)
+       )
+     )
+(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+    )
 
-	(setq org-confirm-babel-evaluate nil)
+(setq org-confirm-babel-evaluate nil)
 
 ;; This is needed as of Org 9.2
 (require 'org-tempo)
