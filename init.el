@@ -60,14 +60,15 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-(leaf auto-package-update
+(use-package auto-package-update
+
   :custom
-  (auto-package-update-interval . 7)
-  (auto-package-update-prompt-before-update . t)
-  (auto-package-update-hide-results . t)
+  (auto-package-update-interval  7)
+  (auto-package-update-prompt-before-update  t)
+  (auto-package-update-hide-results  t)
   ;; :config
-  ;; (auto-package-update-maybe)
-  ;; (auto-package-update-at-time "09:00")
+  (auto-package-update-maybe)
+  (auto-package-update-at-time "09:00")
   )
 
 (leaf exec-path-from-shell
@@ -260,43 +261,67 @@
 ;;(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 295 :wigth 'regular)
 (set-face-attribute 'default nil :height 150)
 
-(leaf evil
-  :ensure t
-  :require t
-  :bind ((evil-emacs-state-map
-	  ("C-h" . evil-delete-backward-char-and-join)
-	  ("<escape>" . evil-normal-state))
-	 (evil-normal-state-map
-	  ("C-f" . evil-forward-char)
-	  ("C-b" . evil-backward-char)
-	  ("C-n" . evil-next-visual-line)
-	  ("C-p" . evil-previous-visual-line))
-	 (evil-visual-state-map
-	  ("C-f" . evil-forward-char)
-	  ("C-b" . evil-backward-char)
-	  ("C-n" . evil-next-visual-line)
-	  ("C-p" . evil-previous-visual-line))
-	 (evil-insert-state-map
-	  ("C-g" . evil-normal-state)))
+;; (leaf evil
+;;   :ensure t
+;;   :require t
+;;   :bind ((evil-emacs-state-map
+;; 	  ("C-h" . evil-delete-backward-char-and-join)
+;; 	  ("<escape>" . evil-normal-state))
+;; 	 (evil-normal-state-map
+;; 	  ("C-f" . evil-forward-char)
+;; 	  ("C-b" . evil-backward-char)
+;; 	  ("C-n" . evil-next-visual-line)
+;; 	  ("C-p" . evil-previous-visual-line))
+;; 	 (evil-visual-state-map
+;; 	  ("C-f" . evil-forward-char)
+;; 	  ("C-b" . evil-backward-char)
+;; 	  ("C-n" . evil-next-visual-line)
+;; 	  ("C-p" . evil-previous-visual-line))
+;; 	 (evil-insert-state-map
+;; 	  ("C-g" . evil-normal-state)))
 
-  :pre-setq (evil-want-keybinding . nil)
-  :setq (
-	 (evil-want-integration . t)	    
-	 (evil-want-C-i-jump . nil)
-     (evil-normal-state-cursor . '("cyan" box))
-     (evil-emacs-state-cursor . '("orange" box)))
-  :setq-default ((evil-cross-lines . t))
+;;   :pre-setq (evil-want-keybinding . nil)
+;;   :setq (
+;; 	 (evil-want-integration . t)	    
+;; 	 (evil-want-C-i-jump . nil)
+;;      (evil-normal-state-cursor . '("cyan" box))
+;;      (evil-emacs-state-cursor . '("orange" box)))
+;;   :setq-default ((evil-cross-lines . t))
+;;   :config
+;;   (evil-mode 1)
+;;   (evil-set-initial-state 'messages-buffer-mode 'normal)
+;;   (evil-set-initial-state 'dashboard-mode 'normal))
+;; (defalias 'evil-insert-state 'evil-emacs-state)
+
+
+;; (use-package evil-collection
+;;   :after evil
+;;   :config
+;;   (evil-collection-init))
+
+(leaf copilot
+  :el-get (copilot
+           :type github
+           :pkgname "zerolfx/copilot.el"
+           )
   :config
-  (evil-mode 1)
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
-(defalias 'evil-insert-state 'evil-emacs-state)
+  (leaf editorconfig
+    :ensure t
+    )
+  (leaf s
+    :ensure t
+    )
+  (leaf dash
+    :ensure t
+    )
+  (defun my/copilot-tab ()
+    (interactive)
+    (or (copilot-accept-completion)
+        (indent-for-tab-command)))
 
-
-(use-package evil-collection
-  :after evil
-  :config
-  (evil-collection-init))
+  (with-eval-after-load 'copilot
+    (define-key copilot-mode-map (kbd "<tab>") #'my/copilot-tab))
+  )
 
 (leaf lsp-mode
   :commands (lsp lsp-deferred)
@@ -431,7 +456,9 @@
 (leaf markdown-preview-mode)
 (leaf maekdownfmt)
 
-(leaf jupyter)
+(leaf jupyter
+  :ensure t
+  :after org)
 
 (use-package csv-mode
   :defer t)
@@ -439,46 +466,49 @@
 ;; (use-package digdag-mode
 ;;   :defer t)
 
-(autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
-(setq auto-mode-alist
-      (append '(("\\.tex$" . yatex-mode)
-                ("\\.ltx$" . yatex-mode)
-                ("\\.cls$" . yatex-mode)
-                ("\\.sty$" . yatex-mode)
-                ("\\.clo$" . yatex-mode)
-                ("\\.bbl$" . yatex-mode)) auto-mode-alist))
+(leaf yatex
+  :ensure t)
 
-(setq YaTeX-inhibit-prefix-letter t)
-(setq YaTeX-kanji-code nil)
-(setq YaTeX-latex-message-code 'utf-8)
-(setq YaTeX-use-LaTeX2e t)
-(setq YaTeX-use-AMS-LaTeX t)
-(setq YaTeX-dvi2-command-ext-alist
-      '(("Preview\\|TeXShop\\|TeXworks\\|Skim\\|mupdf\\|xpdf\\|Firefox\\|Adobe" . ".pdf")))
+     (autoload 'yatex-mode "yatex" "Yet Another LaTeX mode" t)
+      (setq auto-mode-alist
+            (append '(("\\.tex$" . yatex-mode)
+                      ("\\.ltx$" . yatex-mode)
+                      ("\\.cls$" . yatex-mode)
+                      ("\\.sty$" . yatex-mode)
+                      ("\\.clo$" . yatex-mode)
+                      ("\\.bbl$" . yatex-mode)) auto-mode-alist))
 
-(setq tex-command "/Library/TeX/texbin/ptex2pdf -u -l -ot '-synctex=1'");uplatex
+      (setq YaTeX-inhibit-prefix-letter t)
+      (setq YaTeX-kanji-code nil)
+      (setq YaTeX-latex-message-code 'utf-8)
+      (setq YaTeX-use-LaTeX2e t)
+      (setq YaTeX-use-AMS-LaTeX t)
+      (setq YaTeX-dvi2-command-ext-alist
+            '(("Preview\\|TeXShop\\|TeXworks\\|Skim\\|mupdf\\|xpdf\\|Firefox\\|Adobe" . ".pdf")))
 
-;(setq tex-command "/Library/TeX/texbin/ptex2pdf -l -ot '-synctex=1'");platex
-;(setq tex-command "/Library/TeX/texbin/platex");platex
+      (setq tex-command "/Library/TeX/texbin/ptex2pdf -u -l -ot '-synctex=1'");uplatex
 
-;(setq tex-command "xelatex -synctex=1");XeLatexでコンパイル
-;(setq tex-command "/Library/TeX/texbin/latex");latex
+      ;(setq tex-command "/Library/TeX/texbin/ptex2pdf -l -ot '-synctex=1'");platex
+      ;(setq tex-command "/Library/TeX/texbin/platex");platex
 
-;(setq bibtex-command "/Library/TeX/texbin/latexmk -e '$latex=q/uplatex %O -synctex=1 %S/' -e '$bibtex=q/upbibtex %O %B/' -e '$biber=q/biber %O --bblencoding=utf8 -u -U --output_safechars %B/' -e '$makeindex=q/upmendex %O -o %D %S/' -e '$dvipdf=q/dvipdfmx %O -o %D %S/' -norc -gg -pdfdvi")
-(setq bibtex-command (cond ((string-match "uplatex\\|-u" tex-command) "/Library/TeX/texbin/upbibtex")((string-match "platex" tex-command) "/Library/TeX/texbin/pbibtex")((string-match "lualatex\\|luajitlatex\\|xelatex" tex-command) "/Library/TeX/texbin/bibtexu")((string-match "pdflatex\\|latex" tex-command) "/Library/TeX/texbin/bibtex")(t "/Library/TeX/texbin/pbibtex")))
+      ;(setq tex-command "xelatex -synctex=1");XeLatexでコンパイル
+      ;(setq tex-command "/Library/TeX/texbin/latex");latex
+
+      ;(setq bibtex-command "/Library/TeX/texbin/latexmk -e '$latex=q/uplatex %O -synctex=1 %S/' -e '$bibtex=q/upbibtex %O %B/' -e '$biber=q/biber %O --bblencoding=utf8 -u -U --output_safechars %B/' -e '$makeindex=q/upmendex %O -o %D %S/' -e '$dvipdf=q/dvipdfmx %O -o %D %S/' -norc -gg -pdfdvi")
+      (setq bibtex-command (cond ((string-match "uplatex\\|-u" tex-command) "/Library/TeX/texbin/upbibtex")((string-match "platex" tex-command) "/Library/TeX/texbin/pbibtex")((string-match "lualatex\\|luajitlatex\\|xelatex" tex-command) "/Library/TeX/texbin/bibtexu")((string-match "pdflatex\\|latex" tex-command) "/Library/TeX/texbin/bibtex")(t "/Library/TeX/texbin/pbibtex")))
 
 
-(setq makeindex-command (cond ((string-match "uplatex\\|-u" tex-command) "/Library/TeX/texbin/mendex")
-			      ((string-match "platex" tex-command) "/Library/TeX/texbin/mendex")
-			      ((string-match "lualatex\\|luajitlatex\\|xelatex" tex-command) "/Library/TeX/texbin/texindy")
-			      ((string-match "pdflatex\\|latex" tex-command) "/Library/TeX/texbin/makeindex")
-			      (t "/Library/TeX/texbin/mendex")))
-  ;; (setq dvi2-command "/usr/bin/open -a Preview")
-(setq dvi2-command "/usr/bin/open -a Skim")
-(setq tex-pdfview-command "/usr/bin/open -a Skim")
-(setq dviprint-command-format "/usr/bin/open -a \"Adobe Acrobat Reader DC\" `echo %s | gsed -e \"s/\\.[^.]*$/\\.pdf/\"`")
+      (setq makeindex-command (cond ((string-match "uplatex\\|-u" tex-command) "/Library/TeX/texbin/mendex")
+                                    ((string-match "platex" tex-command) "/Library/TeX/texbin/mendex")
+                                    ((string-match "lualatex\\|luajitlatex\\|xelatex" tex-command) "/Library/TeX/texbin/texindy")
+                                    ((string-match "pdflatex\\|latex" tex-command) "/Library/TeX/texbin/makeindex")
+                                    (t "/Library/TeX/texbin/mendex")))
+        ;; (setq dvi2-command "/usr/bin/open -a Preview")
+      (setq dvi2-command "/usr/bin/open -a Skim")
+      (setq tex-pdfview-command "/usr/bin/open -a Skim")
+      (setq dviprint-command-format "/usr/bin/open -a \"Adobe Acrobat Reader DC\" `echo %s | gsed -e \"s/\\.[^.]*$/\\.pdf/\"`")
 
-  (auto-fill-mode -1)
+        (auto-fill-mode -1)
 
 (use-package terraform-mode
   :hook (terraform-mode-hook . #'terraform-format-on-save-mode)
@@ -520,19 +550,6 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-;;   (leaf asdf
- ;;     :load-path "~/.emacs.d/emacs-lisp/asdf.el/"
-
- ;; )
-
-;; (add-to-list 'load-path "~/.emacs.d/emacs-lisp/asdf.el/")
-;; (require 'asdf)
-
-;; (asdf-enable)
-
-;;   (leaf envrc
-;; :config (envrc-global-mode))
-
 (use-package direnv
  :config
  (direnv-mode))
@@ -545,10 +562,11 @@
   (auto-fill-mode 0)
   (visual-line-mode 1)
 
+  (setq org-startup-with-inline-images t)
   (setq org-startup-truncated nil)
   (setq evil-auto-indent nil)
   (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t)
+        org-hide-emphasis-markers t)
   )
 
 (use-package org-bullets
@@ -559,17 +577,17 @@
 
 ;; Replace list hyphen with dot
 (font-lock-add-keywords 'org-mode
-			'(("^ *\\([-]\\) "
-			   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 (dolist (face '((org-level-1 . 1.2)
-		(org-level-2 . 1.1)
-		(org-level-3 . 1.05)
-		(org-level-4 . 1.0)
-		(org-level-5 . 1.1)
-		(org-level-6 . 1.1)
-		(org-level-7 . 1.1)
-		(org-level-8 . 1.1)))
+                (org-level-2 . 1.1)
+                (org-level-3 . 1.05)
+                (org-level-4 . 1.0)
+                (org-level-5 . 1.1)
+                (org-level-6 . 1.1)
+                (org-level-7 . 1.1)
+                (org-level-8 . 1.1)))
   ;;(set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face))
   )
 
@@ -593,19 +611,19 @@
     (org-edit-src-exit)))
 
 (with-eval-after-load 'org
-	    (org-babel-do-load-languages
-	     'org-babel-load-languages
-	     '((emacs-lisp . t)
-	       (python . t)
-	       (shell . t)
-	       (lisp . t)
-;	       (jupyter . t)
-	       )
-	     )
-	(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-	    )
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (shell . t)
+       (lisp . t)
+       (jupyter . t)
+       )
+     )
+(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+    )
 
-	(setq org-confirm-babel-evaluate nil)
+(setq org-confirm-babel-evaluate nil)
 
 ;; This is needed as of Org 9.2
 (require 'org-tempo)
