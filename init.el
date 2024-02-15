@@ -1,40 +1,40 @@
 ;; init.el is created from emacs.org which emacs settings.
-;; Do NOT modify this file.
+     ;; Do NOT modify this file.
 
-;; Initialize package sources
+     ;; Initialize package sources
 
-(eval-and-compile
-  (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-		       ("melpa" . "https://melpa.org/packages/")
-		       ("melpa-stable" . "https://stable.melpa.org/packages/")
-		       ("gnu" . "https://elpa.gnu.org/packages/")
-		       ("elpa" . "https://elpa.gnu.org/packages/")
-		       ))
-  (package-initialize)
-  (unless (package-installed-p 'leaf)
-    (package-refresh-contents)
-    (package-install 'leaf))
+     (eval-and-compile
+       (customize-set-variable
+	'package-archives '(("org" . "https://orgmode.org/elpa/")
+			    ("melpa" . "https://melpa.org/packages/")
+			    ("melpa-stable" . "https://stable.melpa.org/packages/")
+			    ("gnu" . "https://elpa.gnu.org/packages/")
+			    ("elpa" . "https://elpa.gnu.org/packages/")
+			    ))
+       (package-initialize)
+       (unless (package-installed-p 'leaf)
+	 (package-refresh-contents)
+	 (package-install 'leaf))
 
-  (leaf leaf-keywords
-    :ensure t
-    :init
-    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-    (leaf hydra :ensure t)
-    (leaf el-get :ensure t)
-    (leaf blackout :ensure t)
-    (leaf diminish :ensure t)
+       (leaf leaf-keywords
+	 :ensure t
+	 :init
+	 ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
+	 (leaf hydra :ensure t)
+;	 (leaf el-get :ensure t)
+	 (leaf blackout :ensure t)
+	 (leaf diminish :ensure t)
 
-    :config
-    ;; initialize leaf-keywords.el
-    (leaf-keywords-init)))
+	 :config
+	 ;; initialize leaf-keywords.el
+	 (leaf-keywords-init)))
 
-(leaf leaf-tree :ensure t)
-(leaf leaf-convert :ensure t
-  :config (leaf use-package :ensure t))
-(leaf transient-dwim
-  :ensure t
-  :bind (("M-=" . transient-dwim-dispatch)))
+     (leaf leaf-tree :ensure t)
+     (leaf leaf-convert :ensure t
+       :config (leaf use-package :ensure t))
+     (leaf transient-dwim
+       :ensure t
+       :bind (("M-=" . transient-dwim-dispatch)))
 
 (leaf cus-edit
   :doc "tools for customizing Emacs and Lisp packages"
@@ -107,7 +107,9 @@
             (menu-bar-mode . nil)
             (tool-bar-mode . nil)
             (scroll-bar-mode . t)
-            (indent-tabs-mode . nil))
+            (indent-tabs-mode . nil)
+            (make-backup-files . nil)
+            )
   :config
   (defalias 'yes-or-no-p 'y-or-n-p)
   (keyboard-translate ?\C-h ?\C-?))
@@ -186,34 +188,34 @@
   :config
   (setq which-key-idle-delay 0.3))
 
-(leaf ivy
-  :diminish
-  :bind (("C-s" . swiper)
+;; (leaf ivy
+;;   :diminish
+;;   :bind (("C-s" . swiper)
 
-	 (:ivy-minibuffer-map
-	  ("TAB" . ivy-alt-done)
-	  ("C-f" . ivy-alt-done)
-	  ("C-l" . ivy-alt-done)
-	  ("C-j" . ivy-next-line)
-	  ("C-k" . ivy-previous-line))
+;; 	 (:ivy-minibuffer-map
+;; 	  ("TAB" . ivy-alt-done)
+;; 	  ("C-f" . ivy-alt-done)
+;; 	  ("C-l" . ivy-alt-done)
+;; 	  ("C-j" . ivy-next-line)
+;; 	  ("C-k" . ivy-previous-line))
 
-	 (:ivy-switch-buffer-map
-	  ("C-k" . ivy-previous-line)
-	  ("C-l" . ivy-done)
-	  ("C-d" . ivy-switch-buffer-kill))
+;; 	 (:ivy-switch-buffer-map
+;; 	  ("C-k" . ivy-previous-line)
+;; 	  ("C-l" . ivy-done)
+;; 	  ("C-d" . ivy-switch-buffer-kill))
 
-	 (:ivy-reverse-i-search-map
-	  ("C-k" . ivy-previous-line)
-	  ("C-d" . ivy-reverse-i-search-kill))
-	 )
-  :config
-  (ivy-mode t)
-  )
+;; 	 (:ivy-reverse-i-search-map
+;; 	  ("C-k" . ivy-previous-line)
+;; 	  ("C-d" . ivy-reverse-i-search-kill))
+;; 	 )
+;;   :config
+;;   (ivy-mode t)
+;;   )
 
-(leaf ivy-rich
-  :init
-  (ivy-rich-mode 1)
-  )
+;; (leaf ivy-rich
+;;   :init
+;;   (ivy-rich-mode 1)
+;;   )
 
 (leaf counsel
 :init
@@ -299,29 +301,29 @@
 ;;   :config
 ;;   (evil-collection-init))
 
-(leaf copilot
-  :el-get (copilot
-           :type github
-           :pkgname "zerolfx/copilot.el"
-           )
-  :config
-  (leaf editorconfig
-    :ensure t
-    )
-  (leaf s
-    :ensure t
-    )
-  (leaf dash
-    :ensure t
-    )
-  (defun my/copilot-tab ()
-    (interactive)
-    (or (copilot-accept-completion)
-        (indent-for-tab-command)))
+;; (leaf copilot
+;;   :el-get (copilot
+;;            :type github
+;;            :pkgname "zerolfx/copilot.el"
+;;            )
+;;   :config
+;;   (leaf editorconfig
+;;     :ensure t
+;;     )
+;;   (leaf s
+;;     :ensure t
+;;     )
+;;   (leaf dash
+;;     :ensure t
+;;     )
+;;   (defun my/copilot-tab ()
+;;     (interactive)
+;;     (or (copilot-accept-completion)
+;;         (indent-for-tab-command)))
 
-  (with-eval-after-load 'copilot
-    (define-key copilot-mode-map (kbd "<tab>") #'my/copilot-tab))
-  )
+;;   (with-eval-after-load 'copilot
+;;     (define-key copilot-mode-map (kbd "<tab>") #'my/copilot-tab))
+;;   )
 
 (leaf lsp-mode
   :commands (lsp lsp-deferred)
@@ -514,12 +516,12 @@
   :hook (terraform-mode-hook . #'terraform-format-on-save-mode)
 )
 
-(use-package docker
-  :ensure t
-  :bind ("C-c d" . docker))
+;; (use-package docker
+;;   :ensure t
+;;   :bind ("C-c d" . docker))
 
-(use-package dockerfile-mode
-  :defer t)
+;; (use-package dockerfile-mode
+;;   :defer t)
 
 (use-package projectile
   :diminish projectile-mode
