@@ -47,7 +47,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 	 :init
 	 ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
 	 (leaf hydra :ensure t)
-	 (leaf el-get :ensure t)
+;	 (leaf el-get :ensure t)
 	 (leaf blackout :ensure t)
 	 (leaf diminish :ensure t)
 
@@ -183,40 +183,42 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
  Cで書かれた部分のパラメータはcus-startで設定する. C-h, vで説明を見ることができる.
 #+begin_src emacs-lisp
-(leaf cus-start
-  :doc "define customization properties of builtins"
-  :tag "builtin" "internal"
-  :preface
-  (defun c/redraw-frame nil
-    (interactive)
-    (redraw-frame))
+  (leaf cus-start
+    :doc "define customization properties of builtins"
+    :tag "builtin" "internal"
+    :preface
+    (defun c/redraw-frame nil
+      (interactive)
+      (redraw-frame))
 
-  :bind (("M-ESC ESC" . c/redraw-frame))
-  :custom '((user-full-name . "Masaya Kameyama")
-            (user-mail-address . "kamesen038@gmail.com")
-;;            (user-login-name . "masaya")
-            (create-lockfiles . nil)
-            (debug-on-error . t)
-            (init-file-debug . t)
-            (frame-resize-pixelwise . t)
-            (enable-recursive-minibuffers . t)
-            (history-length . 1000)
-            (history-delete-duplicates . t)
-            (scroll-preserve-screen-position . t)
-            (scroll-conservatively . 100)
-            (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
-            (ring-bell-function . 'ignore)
-            (text-quoting-style . 'straight)
-            (truncate-lines . t)
-            ;; (use-dialog-box . nil)
-            ;; (use-file-dialog . nil)
-            (menu-bar-mode . nil)
-            (tool-bar-mode . nil)
-            (scroll-bar-mode . t)
-            (indent-tabs-mode . nil))
-  :config
-  (defalias 'yes-or-no-p 'y-or-n-p)
-  (keyboard-translate ?\C-h ?\C-?))
+    :bind (("M-ESC ESC" . c/redraw-frame))
+    :custom '((user-full-name . "Masaya Kameyama")
+              (user-mail-address . "kamesen038@gmail.com")
+  ;;            (user-login-name . "masaya")
+              (create-lockfiles . nil)
+              (debug-on-error . t)
+              (init-file-debug . t)
+              (frame-resize-pixelwise . t)
+              (enable-recursive-minibuffers . t)
+              (history-length . 1000)
+              (history-delete-duplicates . t)
+              (scroll-preserve-screen-position . t)
+              (scroll-conservatively . 100)
+              (mouse-wheel-scroll-amount . '(1 ((control) . 5)))
+              (ring-bell-function . 'ignore)
+              (text-quoting-style . 'straight)
+              (truncate-lines . t)
+              ;; (use-dialog-box . nil)
+              ;; (use-file-dialog . nil)
+              (menu-bar-mode . nil)
+              (tool-bar-mode . nil)
+              (scroll-bar-mode . t)
+              (indent-tabs-mode . nil)
+              (make-backup-files . nil)
+              )
+    :config
+    (defalias 'yes-or-no-p 'y-or-n-p)
+    (keyboard-translate ?\C-h ?\C-?))
 #+end_src
 
 
@@ -354,34 +356,34 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 
    #+begin_src emacs-lisp
 
-     (leaf ivy
-       :diminish
-       :bind (("C-s" . swiper)
+     ;; (leaf ivy
+     ;;   :diminish
+     ;;   :bind (("C-s" . swiper)
 
-	      (:ivy-minibuffer-map
-	       ("TAB" . ivy-alt-done)
-	       ("C-f" . ivy-alt-done)
-	       ("C-l" . ivy-alt-done)
-	       ("C-j" . ivy-next-line)
-	       ("C-k" . ivy-previous-line))
+     ;; 	 (:ivy-minibuffer-map
+     ;; 	  ("TAB" . ivy-alt-done)
+     ;; 	  ("C-f" . ivy-alt-done)
+     ;; 	  ("C-l" . ivy-alt-done)
+     ;; 	  ("C-j" . ivy-next-line)
+     ;; 	  ("C-k" . ivy-previous-line))
 
-	      (:ivy-switch-buffer-map
-	       ("C-k" . ivy-previous-line)
-	       ("C-l" . ivy-done)
-	       ("C-d" . ivy-switch-buffer-kill))
+     ;; 	 (:ivy-switch-buffer-map
+     ;; 	  ("C-k" . ivy-previous-line)
+     ;; 	  ("C-l" . ivy-done)
+     ;; 	  ("C-d" . ivy-switch-buffer-kill))
 
-	      (:ivy-reverse-i-search-map
-	       ("C-k" . ivy-previous-line)
-	       ("C-d" . ivy-reverse-i-search-kill))
-	      )
-       :config
-       (ivy-mode t)
-       )
+     ;; 	 (:ivy-reverse-i-search-map
+     ;; 	  ("C-k" . ivy-previous-line)
+     ;; 	  ("C-d" . ivy-reverse-i-search-kill))
+     ;; 	 )
+     ;;   :config
+     ;;   (ivy-mode t)
+     ;;   )
 
-     (leaf ivy-rich
-       :init
-       (ivy-rich-mode 1)
-       )
+     ;; (leaf ivy-rich
+     ;;   :init
+     ;;   (ivy-rich-mode 1)
+     ;;   )
 
    #+end_src
 
@@ -508,29 +510,29 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 ** Copilot
 
 #+begin_src emacs-lisp
-(leaf copilot
-  :el-get (copilot
-           :type github
-           :pkgname "zerolfx/copilot.el"
-           )
-  :config
-  (leaf editorconfig
-    :ensure t
-    )
-  (leaf s
-    :ensure t
-    )
-  (leaf dash
-    :ensure t
-    )
-  (defun my/copilot-tab ()
-    (interactive)
-    (or (copilot-accept-completion)
-        (indent-for-tab-command)))
+  ;; (leaf copilot
+  ;;   :el-get (copilot
+  ;;            :type github
+  ;;            :pkgname "zerolfx/copilot.el"
+  ;;            )
+  ;;   :config
+  ;;   (leaf editorconfig
+  ;;     :ensure t
+  ;;     )
+  ;;   (leaf s
+  ;;     :ensure t
+  ;;     )
+  ;;   (leaf dash
+  ;;     :ensure t
+  ;;     )
+  ;;   (defun my/copilot-tab ()
+  ;;     (interactive)
+  ;;     (or (copilot-accept-completion)
+  ;;         (indent-for-tab-command)))
 
-  (with-eval-after-load 'copilot
-    (define-key copilot-mode-map (kbd "<tab>") #'my/copilot-tab))
-  )
+  ;;   (with-eval-after-load 'copilot
+  ;;     (define-key copilot-mode-map (kbd "<tab>") #'my/copilot-tab))
+  ;;   )
 #+end_src
 
 
@@ -914,9 +916,9 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
      Emacs integration for docker, wheich run docker command from emacs.
      
      #+begin_src emacs-lisp
-       (use-package docker
-	 :ensure t
-	 :bind ("C-c d" . docker))
+       ;; (use-package docker
+       ;;   :ensure t
+       ;;   :bind ("C-c d" . docker))
      #+end_src
 
 
@@ -924,11 +926,11 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
 **** [[https://github.com/spotify/dockerfile-mode][dockerfile-mode]]
      
     #+begin_src emacs-lisp
-	  (use-package dockerfile-mode
-	    :defer t)
+      ;; (use-package dockerfile-mode
+      ;;   :defer t)
     #+end_src
 
-**** docker 
+
 
 ** Projectile
 
