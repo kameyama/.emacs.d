@@ -4,22 +4,33 @@
 
 
 
-
 emacsのinit.elをorg-modeを使って管理する. saveすると自動的にemacs-lisp code block内のコードがinit.elにinit.elが生成される.
+
+** install
+
+#+begin_src shell
+brew install emacs-plus@29 --with-xwidgets --with-native-comp --with-debug --with-imagemagick
+#+end_src
+
+
 ** refference
    - [[https://github.com/daviwil/emacs-from-scratch][system crafter]]
    - [[https://github.com/emacs-tw/awesome-emacs][awesome emacs]]
-
-
 
 ** iterm2 (emacs cli)
    Preference > Profile > Keys で+Escを選択するとalt keyがmeta keyになる.
 
 
 
+   #+begin_src emacs-lisp
+ (require 'server)
+(unless (server-running-p)
+  (server-start))
+   #+end_src
+
+  
 * Packege System
   
-   
 ** leaf
    [[https://github.com/conao3/leaf.el][leaf]] is yet another use-package. (use-packageから移行中)
    
@@ -210,7 +221,7 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
               (truncate-lines . t)
               ;; (use-dialog-box . nil)
               ;; (use-file-dialog . nil)
-              (menu-bar-mode . nil)
+              (menu-bar-mode . t)
               (tool-bar-mode . nil)
               (scroll-bar-mode . t)
               (indent-tabs-mode . nil)
@@ -911,6 +922,10 @@ emacsのinit.elをorg-modeを使って管理する. saveすると自動的にema
  
 
     
+*** html
+
+
+
 ** Docker
 **** [[https://github.com/Silex/docker.el][docker]]
      Emacs integration for docker, wheich run docker command from emacs.
