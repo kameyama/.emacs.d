@@ -1,3 +1,7 @@
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
 ;; init.el is created from emacs.org which emacs settings.
      ;; Do NOT modify this file.
 
@@ -104,7 +108,7 @@
             (truncate-lines . t)
             ;; (use-dialog-box . nil)
             ;; (use-file-dialog . nil)
-            (menu-bar-mode . nil)
+            (menu-bar-mode . t)
             (tool-bar-mode . nil)
             (scroll-bar-mode . t)
             (indent-tabs-mode . nil)
