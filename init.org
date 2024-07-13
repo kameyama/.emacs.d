@@ -3,7 +3,6 @@
 #+STARTUP: fold
 
 
-
 emacsのinit.elをorg-modeを使って管理する. saveすると自動的にemacs-lisp code block内のコードがinit.elにinit.elが生成される.
 
 ** install

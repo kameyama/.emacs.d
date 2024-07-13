@@ -6,7 +6,7 @@ eln-cache/
 /etc/*
 /var/*
 !/var/bookmark-default.el
-el-get/*
+/el-get/*
 
 /.last-package-update-day
 /.lsp-session-v1
@@ -15,7 +15,6 @@ el-get/*
 
 
 custom.el
-init.el
 
 
 /.cache/*
